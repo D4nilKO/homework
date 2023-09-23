@@ -42,10 +42,10 @@ internal static class DeckProgram
                 case CommandDrawCard:
                     player.DrawCard(deck);
                     break;
-                
+
                 case CommandExit:
                     player.ShowAllCard();
-                    
+
                     Console.WriteLine("\nВы закончили брать карты и вышли.");
                     isContinue = false;
                     break;
@@ -58,8 +58,15 @@ class Deck
 {
     private Random _random = new();
 
-    private List<Card> _temporaryDeck = new();
-    private Queue<Card> _deck = new();
+    private List<Card> _deck = new();
+
+    private string[] _suits =
+    {
+        "Spades",
+        "Hearts",
+        "Diamonds",
+        "Clubs"
+    };
 
     public Deck(uint minRank, uint maxRank)
     {
@@ -74,7 +81,9 @@ class Deck
 
     public Card GetNextCard()
     {
-        return _deck.Dequeue();
+        Card card = _deck[0];
+        _deck.RemoveAt(0);
+        return card;
     }
 
     public void ShowAllCards()
@@ -89,11 +98,11 @@ class Deck
 
     private void Shuffle()
     {
-        for (int firstNumber = _temporaryDeck.Count - 1; firstNumber > 0; firstNumber--)
+        for (int i = _deck.Count - 1; i > 0; i--)
         {
-            int secondNumber = _random.Next(firstNumber + 1);
+            int secondNumber = _random.Next(i + 1);
 
-            Swap(_temporaryDeck, firstNumber, secondNumber);
+            Swap(_deck, i, secondNumber);
         }
     }
 
@@ -107,34 +116,26 @@ class Deck
 
     private void FillDeck()
     {
-        _temporaryDeck.Clear();
+        _deck.Clear();
         _deck.Clear();
 
-        int suitCount = Enum.GetNames(typeof(Suit)).Length;
+        int suitCount = _deck.
 
         for (uint i = _minRank; i < _maxRank + 1; i++)
         {
             for (int j = 0; j < suitCount; j++)
             {
-                _temporaryDeck.Add(new Card(i, (Suit)j));
+                _deck.Add(new Card(i, (Suit)j));
             }
         }
 
         Shuffle();
 
-        foreach (var card in _temporaryDeck)
+        foreach (var card in _deck)
         {
             _deck.Enqueue(card);
         }
     }
-}
-
-enum Suit
-{
-    Spades,
-    Hearts,
-    Diamonds,
-    Clubs
 }
 
 class Card
@@ -161,7 +162,7 @@ class Player
     public void DrawCard(Deck deck)
     {
         _hand.Add(deck.GetNextCard());
-        
+
         Console.Write($"Вы взяли карту ");
         _hand[_hand.Count - 1].ShowCard();
     }
@@ -169,7 +170,7 @@ class Player
     public void ShowAllCard()
     {
         Console.WriteLine("Ваши карты:");
-        
+
         foreach (var card in _hand)
         {
             card.ShowCard();
