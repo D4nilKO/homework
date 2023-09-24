@@ -10,20 +10,20 @@ internal static class DeckProgram
         const string CommandDrawCard = "Draw";
         const string CommandExit = "Exit";
 
-        Deck deck = new(6, 14);
+        Deck deck = new();
         Player player = new();
 
         deck.ShowAllCards();
 
         Console.WriteLine();
-
-        bool isContinue = true;
-
+        
         Dictionary<string, string> actionsByCommand = new()
         {
             { CommandDrawCard, "Взять карту" },
             { CommandExit, "Выйти из программы" }
         };
+        
+        bool isContinue = true;
 
         while (isContinue)
         {
@@ -42,20 +42,23 @@ internal static class DeckProgram
                 case CommandDrawCard:
                     player.DrawCard(deck);
                     break;
-
+                
                 case CommandExit:
-                    player.ShowAllCard();
-
-                    Console.WriteLine("\nВы закончили брать карты и вышли.");
                     isContinue = false;
                     break;
             }
         }
+
+        player.ShowAllCard();
+        Console.WriteLine("\nВы закончили брать карты и вышли.");
     }
 }
 
 class Deck
 {
+    private const int MinRank = 6;
+    private const int MaxRank = 14;
+
     private Random _random = new();
 
     private List<Card> _deck = new();
@@ -68,22 +71,23 @@ class Deck
         "Clubs"
     };
 
-    public Deck(uint minRank, uint maxRank)
+    public Deck()
     {
-        _minRank = minRank;
-        _maxRank = maxRank;
-
-        FillDeck();
+        Fill();
+        Shuffle();
+        ShowAllCards();
     }
 
-    public uint _minRank { get; private set; }
-    public uint _maxRank { get; private set; }
-
-    public Card GetNextCard()
+    public Card GetCard()
     {
         Card card = _deck[0];
         _deck.RemoveAt(0);
         return card;
+    }
+
+    public void DrawCard(List<Card> hand)
+    {
+        hand.Add(GetCard());
     }
 
     public void ShowAllCards()
@@ -102,11 +106,11 @@ class Deck
         {
             int secondNumber = _random.Next(i + 1);
 
-            Swap(_deck, i, secondNumber);
+            SwapCards(_deck, i, secondNumber);
         }
     }
 
-    private void Swap(List<Card> list, int firstCard, int secondCard)
+    private void SwapCards(List<Card> list, int firstCard, int secondCard)
     {
         Card temporaryCard = list[firstCard];
 
@@ -114,40 +118,33 @@ class Deck
         list[secondCard] = temporaryCard;
     }
 
-    private void FillDeck()
+    private void Fill()
     {
         _deck.Clear();
         _deck.Clear();
 
-        int suitCount = _deck.
+        int suitCount = _suits.Length;
 
-        for (uint i = _minRank; i < _maxRank + 1; i++)
+        for (uint i = MinRank; i < MaxRank + 1; i++)
         {
             for (int j = 0; j < suitCount; j++)
             {
-                _deck.Add(new Card(i, (Suit)j));
+                _deck.Add(new Card(i, _suits[j]));
             }
-        }
-
-        Shuffle();
-
-        foreach (var card in _deck)
-        {
-            _deck.Enqueue(card);
         }
     }
 }
 
 class Card
 {
-    public Card(uint rank, Suit suit)
+    public Card(uint rank, string suit)
     {
         Rank = rank;
         Suit = suit;
     }
 
     public uint Rank { get; private set; }
-    public Suit Suit { get; private set; }
+    public string Suit { get; private set; }
 
     public void ShowCard()
     {
@@ -161,7 +158,7 @@ class Player
 
     public void DrawCard(Deck deck)
     {
-        _hand.Add(deck.GetNextCard());
+        _hand.Add(deck.GetCard());
 
         Console.Write($"Вы взяли карту ");
         _hand[_hand.Count - 1].ShowCard();
