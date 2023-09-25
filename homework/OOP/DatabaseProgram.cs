@@ -21,7 +21,7 @@ internal static class DatabaseProgram
             { CommandBan, "Забанить игрока" },
             { CommandUnban, "Разбанить игрока" },
             { CommandViewAll, "Показать всех игроков" },
-            { CommandExit, "Выйти из программ" }
+            { CommandExit, "Выйти из программы" }
         };
 
         Database database = new Database();
@@ -31,9 +31,7 @@ internal static class DatabaseProgram
         while (isContinue)
         {
             Console.Clear();
-
             Console.WriteLine();
-
             Console.WriteLine("\nМеню:");
 
             foreach (KeyValuePair<string, string> option in actionsByCommand)
@@ -43,7 +41,6 @@ internal static class DatabaseProgram
 
             Console.Write("Выберете необходимую операцию: ");
             string desiredOperation = Console.ReadLine();
-
             Console.WriteLine();
 
             switch (desiredOperation)

@@ -5,13 +5,13 @@ namespace homework.OOP;
 
 internal static class DeckProgram
 {
-    public static void Main(string[] args)
+    public static void Main1(string[] args)
     {
         const string CommandDrawCard = "Draw";
         const string CommandExit = "Exit";
 
         Deck deck = new();
-        Player player = new();
+        Player4 player = new();
 
         deck.ShowAllCards();
 
@@ -152,7 +152,7 @@ class Card
     }
 }
 
-class Player
+class Player4
 {
     private List<Card> _hand = new();
 
