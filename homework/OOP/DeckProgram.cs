@@ -110,8 +110,8 @@ namespace homework.OOP.Deck
 
         private void Fill()
         {
-            const int MinRank = 6;
-            const int MaxRank = 14;
+            int minRank = 6;
+            int maxRank = 14;
 
             string[] suits =
             {
@@ -121,7 +121,7 @@ namespace homework.OOP.Deck
                 "Clubs"
             };
 
-            for (int i = MinRank; i < MaxRank + 1; i++)
+            for (int i = minRank; i < maxRank + 1; i++)
             {
                 for (int j = 0; j < suits.Length; j++)
                 {
