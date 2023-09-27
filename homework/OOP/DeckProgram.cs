@@ -1,176 +1,176 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace homework.OOP;
-
-internal static class DeckProgram
+namespace homework.OOP.Deck
 {
-    public static void Main1(string[] args)
+    internal static class DeckProgram
     {
-        const string CommandDrawCard = "Draw";
-        const string CommandExit = "Exit";
-
-        Deck deck = new();
-        Player4 player = new();
-
-        deck.ShowAllCards();
-
-        Console.WriteLine();
-        
-        Dictionary<string, string> actionsByCommand = new()
+        public static void Main(string[] args)
         {
-            { CommandDrawCard, "Взять карту" },
-            { CommandExit, "Выйти из программы" }
-        };
-        
-        bool isContinue = true;
+            const string CommandDrawCard = "Draw";
+            const string CommandExit = "Exit";
 
-        while (isContinue)
-        {
-            foreach (KeyValuePair<string, string> option in actionsByCommand)
-            {
-                Console.WriteLine($"{option.Key} - {option.Value}");
-            }
+            Deck deck = new();
+            Player player = new();
 
-            Console.Write("Выберете необходимую операцию: ");
-            string desiredOperation = Console.ReadLine();
+            deck.ShowAllCards();
 
             Console.WriteLine();
 
-            switch (desiredOperation)
+            Dictionary<string, string> actionsByCommand = new()
             {
-                case CommandDrawCard:
-                    player.DrawCard(deck);
-                    break;
-                
-                case CommandExit:
-                    isContinue = false;
-                    break;
+                { CommandDrawCard, "Взять карту" },
+                { CommandExit, "Выйти из программы" }
+            };
+
+            bool isContinue = true;
+
+            while (isContinue)
+            {
+                foreach (KeyValuePair<string, string> option in actionsByCommand)
+                {
+                    Console.WriteLine($"{option.Key} - {option.Value}");
+                }
+
+                Console.Write("Выберете необходимую операцию: ");
+                string desiredOperation = Console.ReadLine();
+
+                Console.WriteLine();
+
+                switch (desiredOperation)
+                {
+                    case CommandDrawCard:
+                        player.DrawCard(deck.GiveCard());
+                        break;
+
+                    case CommandExit:
+                        isContinue = false;
+                        break;
+                }
+            }
+
+            player.ShowAllCard();
+            Console.WriteLine("\nВы закончили брать карты и вышли.");
+        }
+    }
+
+    class Deck
+    {
+        private Random _random = new();
+
+        private List<Card> _сards = new();
+
+        public Deck()
+        {
+            Fill();
+            Shuffle();
+            ShowAllCards();
+        }
+
+        public Card GiveCard()
+        {
+            if (_сards.Count > 0)
+            {
+                Card card = _сards[0];
+                _сards.Remove(card);
+
+                return card;
+            }
+
+            return null;
+        }
+
+        public void ShowAllCards()
+        {
+            foreach (Card card in _сards)
+            {
+                card.Show();
+            }
+
+            Console.WriteLine($"\nВ колоде осталось {_сards.Count} карт.");
+        }
+
+        private void Shuffle()
+        {
+            for (int i = _сards.Count - 1; i > 0; i--)
+            {
+                int secondNumber = _random.Next(i + 1);
+
+                SwapCards(i, secondNumber);
             }
         }
 
-        player.ShowAllCard();
-        Console.WriteLine("\nВы закончили брать карты и вышли.");
-    }
-}
-
-class Deck
-{
-    private const int MinRank = 6;
-    private const int MaxRank = 14;
-
-    private Random _random = new();
-
-    private List<Card> _deck = new();
-
-    private string[] _suits =
-    {
-        "Spades",
-        "Hearts",
-        "Diamonds",
-        "Clubs"
-    };
-
-    public Deck()
-    {
-        Fill();
-        Shuffle();
-        ShowAllCards();
-    }
-
-    public Card GetCard()
-    {
-        Card card = _deck[0];
-        _deck.RemoveAt(0);
-        return card;
-    }
-
-    public void DrawCard(List<Card> hand)
-    {
-        hand.Add(GetCard());
-    }
-
-    public void ShowAllCards()
-    {
-        foreach (Card card in _deck)
+        private void SwapCards(int firstCard, int secondCard)
         {
-            card.ShowCard();
+            Card temporaryCard = _сards[firstCard];
+
+            _сards[firstCard] = _сards[secondCard];
+            _сards[secondCard] = temporaryCard;
         }
 
-        Console.WriteLine($"\nВ колоде осталось {_deck.Count} карт.");
-    }
-
-    private void Shuffle()
-    {
-        for (int i = _deck.Count - 1; i > 0; i--)
+        private void Fill()
         {
-            int secondNumber = _random.Next(i + 1);
+            const int MinRank = 6;
+            const int MaxRank = 14;
 
-            SwapCards(_deck, i, secondNumber);
-        }
-    }
-
-    private void SwapCards(List<Card> list, int firstCard, int secondCard)
-    {
-        Card temporaryCard = list[firstCard];
-
-        list[firstCard] = list[secondCard];
-        list[secondCard] = temporaryCard;
-    }
-
-    private void Fill()
-    {
-        _deck.Clear();
-        _deck.Clear();
-
-        int suitCount = _suits.Length;
-
-        for (uint i = MinRank; i < MaxRank + 1; i++)
-        {
-            for (int j = 0; j < suitCount; j++)
+            string[] suits =
             {
-                _deck.Add(new Card(i, _suits[j]));
+                "Spades",
+                "Hearts",
+                "Diamonds",
+                "Clubs"
+            };
+
+            for (int i = MinRank; i < MaxRank + 1; i++)
+            {
+                for (int j = 0; j < suits.Length; j++)
+                {
+                    _сards.Add(new Card(i, suits[j]));
+                }
             }
         }
     }
-}
 
-class Card
-{
-    public Card(uint rank, string suit)
+    class Card
     {
-        Rank = rank;
-        Suit = suit;
-    }
-
-    public uint Rank { get; private set; }
-    public string Suit { get; private set; }
-
-    public void ShowCard()
-    {
-        Console.WriteLine($"{Rank} - {Suit}");
-    }
-}
-
-class Player4
-{
-    private List<Card> _hand = new();
-
-    public void DrawCard(Deck deck)
-    {
-        _hand.Add(deck.GetCard());
-
-        Console.Write($"Вы взяли карту ");
-        _hand[_hand.Count - 1].ShowCard();
-    }
-
-    public void ShowAllCard()
-    {
-        Console.WriteLine("Ваши карты:");
-
-        foreach (var card in _hand)
+        public Card(int rank, string suit)
         {
-            card.ShowCard();
+            Rank = rank;
+            Suit = suit;
+        }
+
+        public int Rank { get; private set; }
+        public string Suit { get; private set; }
+
+        public void Show()
+        {
+            Console.WriteLine($"{Rank} - {Suit}");
+        }
+    }
+
+    class Player
+    {
+        private List<Card> _hand = new();
+
+        public void DrawCard(Card card)
+        {
+            if (card != null)
+            {
+                _hand.Add(card);
+
+                Console.Write($"Вы взяли карту ");
+                card.Show();
+            }
+        }
+
+        public void ShowAllCard()
+        {
+            Console.WriteLine("Ваши карты:");
+
+            foreach (var card in _hand)
+            {
+                card.Show();
+            }
         }
     }
 }
