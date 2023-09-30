@@ -10,6 +10,7 @@ namespace homework.OOP.BookStorage
             const string CommandAddBook = "Add";
             const string CommandRemoveBook = "Remove";
             const string CommandFindBook = "Find";
+            const string CommandViewAll = "View all";
             const string CommandExit = "Exit";
 
             Dictionary<string, string> actionsByCommand = new()
@@ -17,6 +18,7 @@ namespace homework.OOP.BookStorage
                 { CommandAddBook, "Добавить книгу" },
                 { CommandRemoveBook, "Удалить книгу" },
                 { CommandFindBook, "Найти книгу" },
+                { CommandViewAll, "Показать все книги" },
                 { CommandExit, "Выйти" }
             };
 
@@ -27,7 +29,7 @@ namespace homework.OOP.BookStorage
             while (isContinue)
             {
                 Console.Clear();
-                
+
                 Console.WriteLine("Меню:");
 
                 foreach (KeyValuePair<string, string> option in actionsByCommand)
@@ -37,7 +39,7 @@ namespace homework.OOP.BookStorage
 
                 Console.Write("Выберете необходимую операцию: ");
                 string desiredOperation = Console.ReadLine();
-                
+
                 Console.WriteLine();
 
                 switch (desiredOperation)
@@ -54,10 +56,21 @@ namespace homework.OOP.BookStorage
                         bookStorage.ShowBooksByParameter();
                         break;
 
+                    case CommandViewAll:
+                        bookStorage.ViewAllBooks();
+                        break;
+
                     case CommandExit:
                         isContinue = false;
                         break;
+
+                    default:
+                        Console.WriteLine("Неизвестная команда, повторите ввод.");
+                        break;
                 }
+
+                Console.WriteLine("Для продолжения нажмите любую клавишу.");
+                Console.ReadKey();
             }
 
             Console.WriteLine("Выход...");
@@ -66,7 +79,16 @@ namespace homework.OOP.BookStorage
 
     class BookStorage
     {
-        private List<Book> _storage = new();
+        private List<Book> _storage = new()
+        {
+            new Book("1","1",1),
+            new Book("2","1",1),
+            new Book("1","2",1),
+            new Book("1","1",2),
+            new Book("2","2",2),
+            new Book("11","11",11),
+            new Book("22","22",22),
+        };
 
         public void AddBook()
         {
@@ -106,13 +128,13 @@ namespace homework.OOP.BookStorage
             bool isContinue = true;
 
             ViewAllBooks();
-            
+
             while (isContinue)
             {
                 Console.Write("Введите номер книги, которую нужно удалить: ");
                 string indexInput = Console.ReadLine();
 
-                if (int.TryParse(indexInput, out int index) && (index > 0) && (index <= _storage.Count + 1))
+                if (int.TryParse(indexInput, out int index) && (index > 0) && (index <= _storage.Count))
                 {
                     _storage.RemoveAt(index - 1);
 
@@ -121,14 +143,14 @@ namespace homework.OOP.BookStorage
                 }
                 else
                 {
-                    Console.Write("Ожидалось положительное число, повторите ввод: ");
+                    Console.Write("Книги с таким номером нет, повторите ввод: ");
                 }
 
                 Console.WriteLine();
             }
         }
 
-        private void ViewAllBooks()
+        public void ViewAllBooks()
         {
             for (int i = 0; i < _storage.Count; i++)
             {
@@ -168,26 +190,21 @@ namespace homework.OOP.BookStorage
                 switch (parameterInput)
                 {
                     case CommandTitle:
-
+                        FindBookByTitle();
                         break;
+
                     case CommandAuthor:
-
+                        FindBookByAuthor();
                         break;
+
                     case CommandReleaseYear:
-
+                        FindBookByReleaseYear();
                         break;
+
                     case CommandExit:
                         isContinue = false;
                         break;
                 }
-            }
-        }
-
-        private void FindBook(string searchParameter, Book bookParameter)
-        {
-            foreach (var book in _storage)
-            {
-                
             }
         }
 
@@ -197,6 +214,8 @@ namespace homework.OOP.BookStorage
 
             if (TryGetBookByTitle(input, out List<Book> books))
             {
+                Console.WriteLine("Найденные книги:");
+
                 foreach (var book in books)
                 {
                     book.View();
@@ -204,59 +223,106 @@ namespace homework.OOP.BookStorage
             }
         }
 
+        private void FindBookByAuthor()
+        {
+            string input = Console.ReadLine();
+
+            if (TryGetBookByAuthor(input, out List<Book> books))
+            {
+                Console.WriteLine("Найденные книги:");
+
+                foreach (var book in books)
+                {
+                    book.View();
+                }
+            }
+        }
+
+        private void FindBookByReleaseYear()
+        {
+            string input = Console.ReadLine();
+
+            if (TryGetBookByReleaseYear(input, out List<Book> books))
+            {
+                Console.WriteLine("Найденные книги:");
+
+                foreach (var book in books)
+                {
+                    book.View();
+                }
+
+                Console.WriteLine();
+            }
+        }
+
         private bool TryGetBookByTitle(string title, out List<Book> books)
         {
-            books = default;
+            books = new List<Book>();
+            
+            bool isFound = false;
 
             foreach (var book in _storage)
             {
                 if (book.Title.Contains(title))
                 {
-                    books?.Add(book);
+                    books.Add(book);
 
-                    return true;
+                    isFound = true;
                 }
             }
 
-            Console.WriteLine("Книг с таким названием не найдено.");
+            if (isFound == false)
+            {
+                Console.WriteLine("Книг с таким названием не найдено.");
+            }
 
-            return false;
+            return isFound;
         }
 
-        private bool TryGetBookByAuthor(string author, out Book book)
+        private bool TryGetBookByAuthor(string author, out List<Book> books)
         {
-            book = default;
+            books = new List<Book>();
+            
+            bool isFound = false;
 
-            foreach (var element in _storage)
+            foreach (var book in _storage)
             {
-                if (element.Author.Contains(author))
+                if (book.Author.Contains(author))
                 {
-                    book = element;
-                    return true;
+                    books.Add(book);
+                    isFound = true;
                 }
             }
 
-            Console.WriteLine("Книг с таким Автором не найдено.");
+            if (isFound == false)
+            {
+                Console.WriteLine("Книг с таким названием не найдено.");
+            }
 
-            return false;
+            return isFound;
         }
 
-        private bool TryGetBookByReleaseYear(string releaseYear, out Book book)
+        private bool TryGetBookByReleaseYear(string releaseYear, out List<Book> books)
         {
-            book = default;
+            books = new List<Book>();
+            
+            bool isFound = false;
 
-            foreach (var element in _storage)
+            foreach (var book in _storage)
             {
-                if (element.ReleaseYear.ToString().Contains(releaseYear))
+                if (book.ReleaseYear.ToString().Contains(releaseYear))
                 {
-                    book = element;
-                    return true;
+                    books.Add(book);
+                    isFound = true;
                 }
             }
 
-            Console.WriteLine("Книг с таким годом выпуска не найдено.");
+            if (isFound == false)
+            {
+                Console.WriteLine("Книг с таким названием не найдено.");
+            }
 
-            return false;
+            return isFound;
         }
     }
 
