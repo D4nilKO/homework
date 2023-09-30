@@ -5,7 +5,7 @@ namespace homework.OOP.Deck
 {
     internal static class DeckProgram
     {
-        public static void Main(string[] args)
+        public static void Main1(string[] args)
         {
             const string CommandDrawCard = "Draw";
             const string CommandExit = "Exit";
