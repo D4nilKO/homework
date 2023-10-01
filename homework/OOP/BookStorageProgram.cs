@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace homework.OOP.BookStorage
 {
-    internal static class BookStorageProgram
+    internal static class Program
     {
         public static void Main(string[] args)
         {
@@ -359,7 +359,6 @@ namespace homework.OOP.BookStorage
         public string Title { get; private set; }
         public string Author { get; private set; }
         public int ReleaseYear { get; private set; }
-
         public Guid Identifier { get; private set; }
 
         public void View()
