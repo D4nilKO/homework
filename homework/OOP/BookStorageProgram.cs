@@ -69,8 +69,11 @@ namespace homework.OOP.BookStorage
                         break;
                 }
 
-                Console.WriteLine("Для продолжения нажмите любую клавишу.");
-                Console.ReadKey();
+                if (isContinue)
+                {
+                    Console.WriteLine("Для продолжения нажмите любую клавишу.");
+                    Console.ReadKey();
+                }
             }
 
             Console.WriteLine("Выход...");
@@ -81,13 +84,13 @@ namespace homework.OOP.BookStorage
     {
         private List<Book> _storage = new()
         {
-            new Book("1","1",1),
-            new Book("2","1",1),
-            new Book("1","2",1),
-            new Book("1","1",2),
-            new Book("2","2",2),
-            new Book("11","11",11),
-            new Book("22","22",22),
+            new Book("1", "1", 1),
+            new Book("2", "1", 1),
+            new Book("1", "2", 1),
+            new Book("1", "1", 2),
+            new Book("2", "2", 2),
+            new Book("11", "11", 11),
+            new Book("22", "22", 22),
         };
 
         public void AddBook()
@@ -131,12 +134,12 @@ namespace homework.OOP.BookStorage
 
             while (isContinue)
             {
-                Console.Write("Введите номер книги, которую нужно удалить: ");
-                string indexInput = Console.ReadLine();
+                Console.Write("Введите ID книги, которую нужно удалить: ");
+                string identifierInput = Console.ReadLine();
 
-                if (int.TryParse(indexInput, out int index) && (index > 0) && (index <= _storage.Count))
+                if (TryGetBookByIdentifier(identifierInput, out Book book))
                 {
-                    _storage.RemoveAt(index - 1);
+                    _storage.Remove(book);
 
                     Console.WriteLine("Книга успешно удалена!");
                     isContinue = false;
@@ -147,16 +150,6 @@ namespace homework.OOP.BookStorage
                 }
 
                 Console.WriteLine();
-            }
-        }
-
-        public void ViewAllBooks()
-        {
-            for (int i = 0; i < _storage.Count; i++)
-            {
-                var book = _storage[i];
-                Console.Write($"(Книга №{i + 1}) - ");
-                book.View();
             }
         }
 
@@ -208,6 +201,44 @@ namespace homework.OOP.BookStorage
             }
         }
 
+        public void ViewAllBooks()
+        {
+            for (int i = 0; i < _storage.Count; i++)
+            {
+                var book = _storage[i];
+                Console.Write($"(Книга №{i + 1}) - ");
+                book.View();
+            }
+        }
+
+        private void ViewAllBooks(List<Book> books)
+        {
+            foreach (var book in books)
+            {
+                book.View();
+            }
+
+            Console.WriteLine();
+        }
+
+        private bool TryGetBookByIdentifier(string identifier, out Book book)
+        {
+            bool isFound = false;
+
+            book = null;
+
+            foreach (var element in _storage)
+            {
+                if (element.Identifier.ToString() == identifier)
+                {
+                    book = element;
+                    isFound = true;
+                }
+            }
+
+            return isFound;
+        }
+
         private void FindBookByTitle()
         {
             string input = Console.ReadLine();
@@ -216,10 +247,7 @@ namespace homework.OOP.BookStorage
             {
                 Console.WriteLine("Найденные книги:");
 
-                foreach (var book in books)
-                {
-                    book.View();
-                }
+                ViewAllBooks(books);
             }
         }
 
@@ -231,10 +259,7 @@ namespace homework.OOP.BookStorage
             {
                 Console.WriteLine("Найденные книги:");
 
-                foreach (var book in books)
-                {
-                    book.View();
-                }
+                ViewAllBooks(books);
             }
         }
 
@@ -246,19 +271,14 @@ namespace homework.OOP.BookStorage
             {
                 Console.WriteLine("Найденные книги:");
 
-                foreach (var book in books)
-                {
-                    book.View();
-                }
-
-                Console.WriteLine();
+                ViewAllBooks(books);
             }
         }
 
         private bool TryGetBookByTitle(string title, out List<Book> books)
         {
             books = new List<Book>();
-            
+
             bool isFound = false;
 
             foreach (var book in _storage)
@@ -282,7 +302,7 @@ namespace homework.OOP.BookStorage
         private bool TryGetBookByAuthor(string author, out List<Book> books)
         {
             books = new List<Book>();
-            
+
             bool isFound = false;
 
             foreach (var book in _storage)
@@ -305,7 +325,7 @@ namespace homework.OOP.BookStorage
         private bool TryGetBookByReleaseYear(string releaseYear, out List<Book> books)
         {
             books = new List<Book>();
-            
+
             bool isFound = false;
 
             foreach (var book in _storage)
@@ -333,15 +353,18 @@ namespace homework.OOP.BookStorage
             Title = title;
             Author = author;
             ReleaseYear = releaseYear;
+            Identifier = Guid.NewGuid();
         }
 
         public string Title { get; private set; }
         public string Author { get; private set; }
         public int ReleaseYear { get; private set; }
 
+        public Guid Identifier { get; private set; }
+
         public void View()
         {
-            Console.Write($"{Title} | Автор - {Author} | Год выпуска - {ReleaseYear}\n");
+            Console.Write($"{Title} | Автор - {Author} | Год выпуска - {ReleaseYear} | ID: {Identifier}\n");
         }
     }
 }
