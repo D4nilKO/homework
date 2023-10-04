@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace homework.OOP.Deck
 {
-    internal static class DeckProgram
+    internal static class Program
     {
         public static void Main1(string[] args)
         {

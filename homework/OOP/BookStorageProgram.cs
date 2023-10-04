@@ -5,7 +5,7 @@ namespace homework.OOP.BookStorage
 {
     internal static class Program
     {
-        public static void Main(string[] args)
+        public static void Main1(string[] args)
         {
             const string CommandAddBook = "Add";
             const string CommandRemoveBook = "Remove";
