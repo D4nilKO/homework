@@ -16,7 +16,7 @@ namespace homework.OOP.Store
             Console.WriteLine("Введите ID товара: ");
             string inputIdentifier = Console.ReadLine();
 
-            TransferItem(inputIdentifier, player, seller);
+            seller.TransferItem(inputIdentifier, player);
 
             Console.WriteLine();
 
@@ -30,31 +30,19 @@ namespace homework.OOP.Store
             seller.ViewAllItems();
             seller.ViewMoney();
         }
-
-        private static void TransferItem(string identifier, Player player, Seller seller)
-        {
-            if (seller.TryGetItem(identifier, out Item item))
-            {
-                if (player.CanPay(item))
-                {
-                    player.BuyItem(item);
-                    seller.SellItem(item);
-                }
-            }
-        }
     }
 
     abstract class Entity
     {
+        protected List<Item> Items = new();
+
         protected Entity(uint money)
         {
             Money = money;
         }
 
         public uint Money { get; protected set; }
-
-        protected List<Item> Items = new();
-
+        
         public void ViewAllItems()
         {
             foreach (var product in Items)
@@ -79,13 +67,25 @@ namespace homework.OOP.Store
             Items.Add(new Item("Item4", 45));
         }
 
-        public void SellItem(Item item)
+        public void TransferItem(string identifier, Player player)
+        {
+            if (TryGetItem(identifier, out Item item))
+            {
+                if (player.CanPay(item.Price))
+                {
+                    player.BuyItem(item);
+                    SellItem(item);
+                }
+            }
+        }
+
+        private void SellItem(Item item)
         {
             Items.Remove(item);
             Money += item.Price;
         }
 
-        public bool TryGetItem(string identifier, out Item item)
+        private bool TryGetItem(string identifier, out Item item)
         {
             bool isFound = false;
 
@@ -124,9 +124,9 @@ namespace homework.OOP.Store
             Items.Add(item);
         }
 
-        public bool CanPay(Item item)
+        public bool CanPay(uint price)
         {
-            if (Money > item.Price)
+            if (Money > price)
             {
                 return true;
             }
