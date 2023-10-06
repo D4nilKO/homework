@@ -11,21 +11,36 @@ namespace homework.OOP.Store
             Player player = new Player(40, "John");
 
             Console.WriteLine("Доступные товары в магазине:");
-            seller.ViewAll();
+            seller.ViewAllItems();
 
-            seller.SellItem(player);
-            
+            Console.WriteLine("Введите ID товара: ");
+            string inputIdentifier = Console.ReadLine();
+
+            TransferItem(inputIdentifier, player, seller);
+
             Console.WriteLine();
 
             Console.WriteLine("Ваши вещи: ");
-            player.ViewAll();
+            player.ViewAllItems();
             player.ViewMoney();
 
             Console.WriteLine();
 
             Console.WriteLine("Вещи магазина: ");
-            seller.ViewAll();
+            seller.ViewAllItems();
             seller.ViewMoney();
+        }
+
+        private static void TransferItem(string identifier, Player player, Seller seller)
+        {
+            if (seller.TryGetItem(identifier, out Item item))
+            {
+                if (player.CanPay(item))
+                {
+                    player.BuyItem(item);
+                    seller.SellItem(item);
+                }
+            }
         }
     }
 
@@ -40,7 +55,7 @@ namespace homework.OOP.Store
 
         protected List<Item> Items = new();
 
-        public void ViewAll()
+        public void ViewAllItems()
         {
             foreach (var product in Items)
             {
@@ -61,50 +76,16 @@ namespace homework.OOP.Store
             Items.Add(new Item("Item1", 10));
             Items.Add(new Item("Item2", 15));
             Items.Add(new Item("Item3", 20));
+            Items.Add(new Item("Item4", 45));
         }
 
-        public void SellItem(Player player)
+        public void SellItem(Item item)
         {
-            Console.WriteLine("Вы хотите купить предмет, введите его ID: ");
-            Item item = FindItemByIdentifier();
-
-            if (player.Buy(item))
-            {
-                Items.Remove(item);
-                TransferMoneyForItem(item);
-            }
-        }
-
-        private void TransferMoneyForItem(Item item)
-        {
+            Items.Remove(item);
             Money += item.Price;
         }
 
-        private Item FindItemByIdentifier()
-        {
-            bool isContinue = true;
-
-            Item item = null;
-
-            while (isContinue)
-            {
-                string input = Console.ReadLine();
-
-                if (TryGetItemByIdentifier(input, out Item foundedItem))
-                {
-                    isContinue = false;
-                    item = foundedItem;
-                }
-                else
-                {
-                    Console.WriteLine("Такого товара нет, попробуйте еще раз.");
-                }
-            }
-
-            return item;
-        }
-
-        private bool TryGetItemByIdentifier(string identifier, out Item item)
+        public bool TryGetItem(string identifier, out Item item)
         {
             bool isFound = false;
 
@@ -117,6 +98,11 @@ namespace homework.OOP.Store
                     item = element;
                     isFound = true;
                 }
+            }
+
+            if (item == null)
+            {
+                Console.WriteLine("Такого товара нет, попробуйте еще раз.");
             }
 
             return isFound;
@@ -132,28 +118,21 @@ namespace homework.OOP.Store
 
         public string Name { get; private set; }
 
-        public bool Buy(Item item)
-        {
-            bool isPurchased = false;
-
-            if (Money >= item.Price)
-            {
-                SpendMoney(item);
-                Items.Add(item);
-
-                isPurchased = true;
-            }
-            else
-            {
-                Console.WriteLine("У вас недостаточно денег");
-            }
-
-            return isPurchased;
-        }
-
-        private void SpendMoney(Item item)
+        public void BuyItem(Item item)
         {
             Money -= item.Price;
+            Items.Add(item);
+        }
+
+        public bool CanPay(Item item)
+        {
+            if (Money > item.Price)
+            {
+                return true;
+            }
+
+            Console.WriteLine("У игрока недостаточно денег.");
+            return false;
         }
     }
 

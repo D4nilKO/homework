@@ -63,6 +63,7 @@
         <Compile Include="OOP\PlayerProgram.cs" />
         <Compile Include="OOP\PropertiesProgram.cs" />
         <Compile Include="OOP\Store.cs" />
+        <Compile Include="OOP\TrainConfigurator.cs" />
         <Compile Include="ParenthesisExpression.cs" />
         <Compile Include="PersonnelAccounting.cs" />
         <Compile Include="IntRead.cs" />
