@@ -7,6 +7,7 @@ namespace homework.OOP.Store
     {
         public static void Main(string[] args)
         {
+            Mediator mediator = new Mediator();
             Seller seller = new Seller(0);
             Player player = new Player(40, "John");
 
@@ -16,7 +17,7 @@ namespace homework.OOP.Store
             Console.WriteLine("Введите ID товара: ");
             string inputIdentifier = Console.ReadLine();
 
-            seller.TransferItem(inputIdentifier, player);
+            mediator.TransferItem(inputIdentifier, seller, player);
 
             Console.WriteLine();
 
@@ -32,6 +33,21 @@ namespace homework.OOP.Store
         }
     }
 
+    class Mediator
+    {
+        public void TransferItem(string identifier, Seller seller, Player player)
+        {
+            if (seller.TryGetItem(identifier, out Item item))
+            {
+                if (player.CanPay(item.Price))
+                {
+                    player.BuyItem(item);
+                    seller.SellItem(item);
+                }
+            }
+        }
+    }
+
     abstract class Entity
     {
         protected List<Item> Items = new();
@@ -42,7 +58,7 @@ namespace homework.OOP.Store
         }
 
         public uint Money { get; protected set; }
-        
+
         public void ViewAllItems()
         {
             foreach (var product in Items)
@@ -67,25 +83,13 @@ namespace homework.OOP.Store
             Items.Add(new Item("Item4", 45));
         }
 
-        public void TransferItem(string identifier, Player player)
-        {
-            if (TryGetItem(identifier, out Item item))
-            {
-                if (player.CanPay(item.Price))
-                {
-                    player.BuyItem(item);
-                    SellItem(item);
-                }
-            }
-        }
-
-        private void SellItem(Item item)
+        public void SellItem(Item item)
         {
             Items.Remove(item);
             Money += item.Price;
         }
 
-        private bool TryGetItem(string identifier, out Item item)
+        public bool TryGetItem(string identifier, out Item item)
         {
             bool isFound = false;
 
