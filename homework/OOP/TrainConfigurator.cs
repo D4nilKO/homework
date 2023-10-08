@@ -5,7 +5,7 @@ namespace homework.OOP.TrainConfigurator
 {
     internal static class Program
     {
-        public static void Main(string[] args)
+        public static void Main1(string[] args)
         {
             TrainConfigurator trainConfigurator = new();
 
@@ -30,10 +30,10 @@ namespace homework.OOP.TrainConfigurator
         {
             Console.WriteLine("Введите откуда отправляется поезд: ");
             string departure = Console.ReadLine();
-
+            
             Console.WriteLine("Введите куда приезжает поезд: ");
             string arrival = Console.ReadLine();
-
+            
             CurrentDirection = new Direction(departure, arrival);
         }
 
@@ -51,18 +51,17 @@ namespace homework.OOP.TrainConfigurator
         {
             CurrentTrain = new Train(CurrentDirection);
 
-            if (CurrentTrain.TryForm(PassengersCount))
-            {
-                Console.WriteLine("\nПоезд успешно сформирован.");
-                Console.WriteLine($"Вагон вмещает : {CurrentTrain.Wagons[0].AllSeatsCount}");
-                Console.WriteLine($"Количество пассажиров: {PassengersCount}");
-                Console.WriteLine($"Количество вагонов: {CurrentTrain.Wagons.Count}");
-                Console.WriteLine($"Количество свободных мест: {CurrentTrain.GetAllFreeSeats()}");
-            }
-            else
-            {
-                Console.WriteLine("Ошибка формирования поезда.");
-            }
+            CurrentTrain.Form(PassengersCount);
+
+            Console.WriteLine("\nПоезд успешно сформирован.");
+            
+            Console.WriteLine($"Каждый вагон вмещает {Wagon.AllSeatsCount} человек");
+            Console.WriteLine($"Количество пассажиров: {PassengersCount}");
+            Console.WriteLine($"Количество вагонов: {CurrentTrain.Wagons.Count}");
+            Console.WriteLine($"Количество свободных мест: {CurrentTrain.GetAllFreeSeats()}");
+            Console.WriteLine();
+            
+            CurrentTrain.DisplayAllSeats();
         }
 
         public void TrainDispatch()
@@ -85,6 +84,21 @@ namespace homework.OOP.TrainConfigurator
         public Direction Direction { get; private set; }
         private uint StartWagonsCount { get; set; } = 1;
 
+        public void DisplayAllSeats()
+        {
+            for (var i = 0; i < Wagons.Count; i++)
+            {
+                var wagon = Wagons[i];
+                for (var j = 0; j < wagon.Seats.Length; j++)
+                {
+                    var seat = wagon.Seats[j];
+                    Console.WriteLine($"Вагон: {i + 1} | Место: {j + 1} - {seat.IsOccupied}");
+                }
+
+                Console.WriteLine();
+            }
+        }
+
         public uint GetAllFreeSeats()
         {
             uint freeSeats = 0;
@@ -99,91 +113,49 @@ namespace homework.OOP.TrainConfigurator
 
         public void AddWagons(uint count)
         {
-            Console.WriteLine($"Вагонов добавилось {count}");
-            
             for (int i = 0; i < count; i++)
             {
                 Wagons.Add(new Wagon());
             }
         }
 
-        public bool TryGetIncompleteWagon(out Wagon wagon)
+        public bool TryGetFreeSeat(out Seat freeSeat)
         {
-            bool isFound = false;
-            wagon = null;
+            freeSeat = null;
 
-            foreach (var element in Wagons)
+            foreach (var wagon in Wagons)
             {
-                if (element.TryGetFreeSeat(out Seat seat))
+                foreach (var seat in wagon.Seats)
                 {
-                    isFound = true;
-                    wagon = element;
+                    if (seat.IsOccupied == false)
+                    {
+                        freeSeat = seat;
+                        return true;
+                    }
                 }
             }
 
-            if (isFound == false)
-            {
-                Console.WriteLine("Незаполненый вагон не найден!");
-            }
-
-            return isFound;
+            return false;
         }
 
         public void FillWagons(uint passengersCount)
         {
-            while (passengersCount > 0)
+            for (int i = 0; i < passengersCount; i++)
             {
-                if (TryGetIncompleteWagon(out Wagon wagon))
+                if (TryGetFreeSeat(out Seat seat))
                 {
-                    if (wagon.TryGetFreeSeat(out Seat seat))
-                    {
-                        if (seat.TryTakeSeat())
-                        {
-                            passengersCount--;
-                        }
-                        else
-                        {
-                            Console.WriteLine("ошибка 3");
-                            Console.WriteLine($"{passengersCount}");
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine("ошибка 2");
-                        Console.WriteLine($"{passengersCount}");
-                        break;
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("ошибка 1");
-                    Console.WriteLine($"{passengersCount}");
-                    break;
+                    seat.TakeSeat();
                 }
             }
         }
 
-        public bool TryForm(uint passengersCount)
+        public void Form(uint passengersCount)
         {
-            bool isFormed = false;
+            uint seatsPerWagon = Wagon.AllSeatsCount;
+            uint wagonsCount = (uint)Math.Ceiling((double)passengersCount / seatsPerWagon);
 
-            if (TryGetIncompleteWagon(out Wagon firstWagon))
-            {
-                uint seatsPerWagon = firstWagon.AllSeatsCount;
-                uint wagonsCount = (uint)Math.Ceiling((double)passengersCount / seatsPerWagon);
-
-                AddWagons((uint)(wagonsCount - Wagons.Count));
-                FillWagons(passengersCount);
-
-                isFormed = true;
-            }
-            else
-            {
-                Console.WriteLine("Ошибка: У поезда нет стартового вагона");
-            }
-
-            return isFormed;
+            AddWagons((uint)(wagonsCount - Wagons.Count));
+            FillWagons(passengersCount);
         }
     }
 
@@ -217,7 +189,7 @@ namespace homework.OOP.TrainConfigurator
 
             foreach (var seat in Seats)
             {
-                if (seat.IsOccupied == true)
+                if (seat.IsOccupied == false)
                 {
                     countOfFreeSeats++;
                 }
@@ -226,28 +198,8 @@ namespace homework.OOP.TrainConfigurator
             return countOfFreeSeats;
         }
 
-        public uint AllSeatsCount { get; private set; } = 10;
+        public static readonly uint AllSeatsCount = 10;
         public Seat[] Seats { get; private set; }
-
-        public bool TryGetFreeSeat(out Seat seat)
-        {
-            seat = null;
-
-            foreach (var element in Seats)
-            {
-                if (element.TryTakeSeat())
-                {
-                    seat = element;
-                    return true;
-                }
-                else
-                {
-                    Console.WriteLine($"Вагон уже заполнен");
-                }
-            }
-
-            return false;
-        }
     }
 
     class Seat
@@ -259,18 +211,9 @@ namespace homework.OOP.TrainConfigurator
 
         public bool IsOccupied { get; private set; }
 
-        public bool TryTakeSeat()
+        public void TakeSeat()
         {
-            if (IsOccupied == false)
-            {
-                IsOccupied = true;
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("Место уже занято");
-                return false;
-            }
+            IsOccupied = true;
         }
     }
 }

@@ -5,44 +5,108 @@ namespace homework.OOP.Store
 {
     internal static class Program
     {
-        public static void Main1(string[] args)
+        public static void Main(string[] args)
         {
-            Mediator mediator = new Mediator();
-            Seller seller = new Seller(0);
-            Player player = new Player(40, "John");
-
-            Console.WriteLine("Доступные товары в магазине:");
-            seller.ViewAllItems();
-
-            Console.WriteLine("Введите ID товара: ");
-            string inputIdentifier = Console.ReadLine();
-
-            mediator.TransferItem(inputIdentifier, seller, player);
-
-            Console.WriteLine();
-
-            Console.WriteLine("Ваши вещи: ");
-            player.ViewAllItems();
-            player.ViewMoney();
-
-            Console.WriteLine();
-
-            Console.WriteLine("Вещи магазина: ");
-            seller.ViewAllItems();
-            seller.ViewMoney();
+            Shop shop = new();
+            shop.Work();
         }
     }
 
-    class Mediator
+    class Shop
     {
-        public void TransferItem(string identifier, Seller seller, Player player)
+        public void Work()
         {
-            if (seller.TryGetItem(identifier, out Item item))
+            Seller seller = new Seller(0);
+            Player player = new Player(40, "Василий");
+
+            const string CommandViewSellerItems = "Что продаешь?";
+            const string CommandViewPlayerItems = "Посмотреть свой инвентарь";
+            const string CommandViewSellerBalance = "Сколько у тебя денег?";
+            const string CommandViewPlayerBalance = "Посмотреть в свой кошелек";
+            const string CommandBuyItem = "Купить";
+            const string CommandExit = "Exit";
+
+            Dictionary<string, string> actionsByCommand = new()
+            {
+                { CommandViewSellerItems, "Показать товары продавца" },
+                { CommandViewPlayerItems, "Показать предметы игрока" },
+                { CommandViewSellerBalance, "Показать баланс продавца" },
+                { CommandViewPlayerBalance, "Показать баланс игрока" },
+                { CommandBuyItem, "Купить предмет" },
+                { CommandExit, "Выйти из программы" }
+            };
+
+            bool isContinue = true;
+
+            while (isContinue)
+            {
+                Console.Clear();
+                Console.WriteLine();
+                Console.WriteLine("\nМеню:");
+                Console.WriteLine("Здесь Команды | Здесь Что делают команды");
+                Console.WriteLine();
+
+                foreach (KeyValuePair<string, string> option in actionsByCommand)
+                {
+                    Console.WriteLine($"{option.Key} - {option.Value}");
+                }
+
+                Console.Write($"\n{player.Name}, Скорее выберете необходимую операцию, пирожки стынут: ");
+                string desiredOperation = Console.ReadLine();
+                Console.WriteLine();
+
+                switch (desiredOperation)
+                {
+                    case CommandViewSellerItems:
+                        seller.ViewAllItems();
+                        break;
+
+                    case CommandViewPlayerItems:
+                        player.ViewAllItems();
+                        break;
+
+                    case CommandViewSellerBalance:
+                        seller.ViewMoney();
+                        break;
+
+                    case CommandViewPlayerBalance:
+                        player.ViewMoney();
+                        break;
+
+                    case CommandBuyItem:
+                        TransferItem(seller, player);
+                        break;
+
+                    case CommandExit:
+                        isContinue = false;
+                        Console.WriteLine("Выход...");
+                        break;
+
+                    default:
+                        Console.WriteLine("Неизвестная команда. Повторите ввод.");
+                        break;
+                }
+
+                Console.WriteLine("Нажмите любую клавишу для продолжения... ");
+                Console.ReadKey();
+            }
+        }
+
+        private void TransferItem(Seller seller, Player player)
+        {
+            seller.ViewAllItems();
+
+            Console.WriteLine("Введите ID прдемета, который вы хотите купить");
+            string inputIdentifier = Console.ReadLine();
+
+            if (seller.TryGetItem(inputIdentifier, out Item item))
             {
                 if (player.CanPay(item.Price))
                 {
                     player.BuyItem(item);
                     seller.SellItem(item);
+
+                    Console.WriteLine($"Вы успешно купили {item.Name} за {item.Price} шекелей");
                 }
             }
         }
@@ -57,7 +121,7 @@ namespace homework.OOP.Store
             Money = money;
         }
 
-        public uint Money { get; protected set; }
+        protected uint Money { get; set; }
 
         public void ViewAllItems()
         {
@@ -77,10 +141,10 @@ namespace homework.OOP.Store
     {
         public Seller(uint money) : base(money)
         {
-            Items.Add(new Item("Item1", 10));
-            Items.Add(new Item("Item2", 15));
-            Items.Add(new Item("Item3", 20));
-            Items.Add(new Item("Item4", 45));
+            Items.Add(new Item("Пирожок без всего", 10));
+            Items.Add(new Item("Пирожок с картошкой", 15));
+            Items.Add(new Item("Пирожок с луком и яйцом", 20));
+            Items.Add(new Item("Пирожок с мясом и луком", 45));
         }
 
         public void SellItem(Item item)
@@ -130,7 +194,7 @@ namespace homework.OOP.Store
 
         public bool CanPay(uint price)
         {
-            if (Money > price)
+            if (Money >= price)
             {
                 return true;
             }
