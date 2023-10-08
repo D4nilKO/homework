@@ -5,7 +5,7 @@ namespace homework.OOP.Store
 {
     internal static class Program
     {
-        public static void Main(string[] args)
+        public static void Main1(string[] args)
         {
             Mediator mediator = new Mediator();
             Seller seller = new Seller(0);
