@@ -5,7 +5,7 @@ namespace homework.OOP.Store
 {
     internal static class Program
     {
-        public static void Main(string[] args)
+        public static void Main1(string[] args)
         {
             Shop shop = new();
             shop.Work();
@@ -19,11 +19,11 @@ namespace homework.OOP.Store
             Seller seller = new Seller(0);
             Player player = new Player(40, "Василий");
 
-            const string CommandViewSellerItems = "Что продаешь?";
-            const string CommandViewPlayerItems = "Посмотреть свой инвентарь";
-            const string CommandViewSellerBalance = "Сколько у тебя денег?";
-            const string CommandViewPlayerBalance = "Посмотреть в свой кошелек";
-            const string CommandBuyItem = "Купить";
+            const string CommandViewSellerItems = "1";
+            const string CommandViewPlayerItems = "2";
+            const string CommandViewSellerBalance = "3";
+            const string CommandViewPlayerBalance = "4";
+            const string CommandBuyItem = "5";
             const string CommandExit = "Exit";
 
             Dictionary<string, string> actionsByCommand = new()
