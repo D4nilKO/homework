@@ -31,7 +31,7 @@ namespace homework.OOP.TrainConfigurator
 
             Dictionary<string, string> actionsByCommand = new()
             {
-                { CommandCreateDirection, "создает направление для поезда" },
+                { CommandCreateDirection, "Создает направление для поезда" },
                 { CommandSellTickets, "Вы получаете кол-во пассажиров, которые купили билеты на это направление" },
                 { CommandFormTrain, "Создает поезд, и заполняет его вагоны пассажирами" },
                 { CommandTrainDispatch, "Отправляет поезд, после чего можете снова создать направление" },
@@ -108,99 +108,168 @@ namespace homework.OOP.TrainConfigurator
             StringBuilder status = new("\nСостояние: ");
             string separator = " | ";
 
-            status.Append($"{_currentDirection.GetInfo()}");
+            if (_currentDirection != null)
+            {
+                status.Append($"{_currentDirection.GetInfo()}");
+            }
+            else
+            {
+                status.Append("Направление не задано");
+            }
 
             status.Append(separator);
 
-            status.Append($"{_currentTrain.GetInfo(separator)}");
+            if (_passengersCount > 0)
+            {
+                status.Append($"Количество купленых билетов: {_passengersCount}");
+            }
+            else
+            {
+                status.Append("Билеты не проданы");
+            }
+
+            status.Append(separator);
+
+            if (_currentTrain != null)
+            {
+                status.Append($"{_currentTrain.GetInfo(separator)}");
+            }
+            else
+            {
+                status.Append("Поезд не создан");
+            }
 
             Console.WriteLine(status.ToString());
-
-            // status.Append(separator);
-            //
-            // status.Append();
         }
 
         private void CreateDirection()
         {
-            Console.WriteLine("Введите откуда отправляется поезд: ");
-            string departure = Console.ReadLine();
+            if (_currentDirection == null)
+            {
+                Console.WriteLine("Введите откуда отправляется поезд: ");
+                string departure = Console.ReadLine();
 
-            Console.WriteLine("Введите куда приезжает поезд: ");
-            string arrival = Console.ReadLine();
+                Console.WriteLine("Введите куда приезжает поезд: ");
+                string arrival = Console.ReadLine();
 
-            _currentDirection = new Direction(departure, arrival);
+                _currentDirection = new Direction(departure, arrival);
+            }
+            else
+            {
+                Console.WriteLine("Направление уже задано.");
+            }
         }
 
         private void SellTickets()
         {
-            int minRandomTicketCount = 10;
-            int maxRandomTicketCount = 30;
+            if (_currentDirection != null)
+            {
+                if (_passengersCount == 0)
+                {
+                    if (_currentTrain == null)
+                    {
+                        int minRandomTicketCount = 10;
+                        int maxRandomTicketCount = 30;
 
-            Random random = new();
+                        Random random = new();
 
-            _passengersCount = (uint)random.Next(minRandomTicketCount, maxRandomTicketCount);
+                        _passengersCount = (uint)random.Next(minRandomTicketCount, maxRandomTicketCount);
 
-            Console.WriteLine($"Билеты купили {_passengersCount} человек.");
+                        Console.WriteLine($"Билеты купили {_passengersCount} человек.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Поезд уже сформирован");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Билеты уже проданы.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Направление не задано, как вы продавать билеты можете?");
+            }
         }
 
         private void FormTrain()
         {
-            _currentTrain = new Train(_currentDirection);
+            if (_passengersCount > 0)
+            {
+                if (_currentDirection != null)
+                {
+                    if (_currentTrain == null)
+                    {
+                        _currentTrain = new Train(_currentDirection);
 
-            _currentTrain.Form(_passengersCount);
+                        _currentTrain.Form(_passengersCount);
 
-            Console.WriteLine("\nПоезд успешно сформирован.");
+                        Console.WriteLine("\nПоезд успешно сформирован.");
 
-            Console.WriteLine($"Каждый вагон вмещает {Wagon.AllSeatsCount} человек");
-            Console.WriteLine($"Количество пассажиров: {_passengersCount}");
-            Console.WriteLine($"Количество вагонов: {_currentTrain.Wagons.Count}");
-            Console.WriteLine($"Количество свободных мест: {_currentTrain.GetAllFreeSeats()}");
-            Console.WriteLine();
+                        Console.WriteLine($"Каждый вагон вмещает {Train.SeatsPerWagon} человек");
+                        Console.WriteLine($"Количество пассажиров: {_passengersCount}");
+                        Console.WriteLine($"Количество вагонов: {_currentTrain.Wagons.Count}");
+                        Console.WriteLine($"Количество свободных мест: {_currentTrain.GetAllFreeSeats()}");
+                        Console.WriteLine();
 
-            _currentTrain.DisplayAllSeats();
+                        _currentTrain.DisplayAllSeats();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Поезд уже сформирован!");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Направление не задано.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Билеты не проданы, невозможно создать поезд.");
+            }
         }
 
         private void TrainDispatch()
         {
-            _currentDirection = default;
-            _currentTrain = default;
-            _passengersCount = default;
+            if (_currentTrain != null)
+            {
+                Console.WriteLine($"Поезд {_currentTrain.Direction.GetInfo()} отбыл в путь!");
+                Console.WriteLine("Теперь вы можете создать новый поезд.");
 
-            Console.WriteLine("Поезд успешно отбыл в путь!");
-            Console.WriteLine("Теперь вы можете создать новый поезд.");
+                _currentDirection = default;
+                _currentTrain = default;
+                _passengersCount = default;
+            }
+            else
+            {
+                Console.WriteLine("Поезд для отправки отсутсвует.");
+            }
         }
     }
 
     class Train
     {
+        public const uint SeatsPerWagon = 10;
+
         public Train(Direction direction)
         {
             Direction = direction;
-            AddWagons(StartWagonsCount);
             IsFormed = false;
         }
 
         public List<Wagon> Wagons { get; private set; } = new();
         public Direction Direction { get; private set; }
-        private uint StartWagonsCount { get; set; } = 1;
-
         private bool IsFormed { get; set; }
 
         public string GetInfo(string separator)
         {
             StringBuilder info = new();
 
-            if (Direction == default)
-            {
-               info.Append("Поезд не создан");
-            }
-            else
-            {
-                info.Append($"Кол-во вагонов {Wagons.Count}{separator}");
-                info.Append($"Кол-во свободных мест в каждом вагоне = {Wagon.AllSeatsCount}{separator}");
-                info.Append($"Сформирован: {IsFormed}{separator}");
-            }
+            info.Append($"Кол-во вагонов {Wagons.Count}{separator}");
+            info.Append($"Кол-во свободных мест в каждом вагоне = {SeatsPerWagon}{separator}");
+            info.Append($"Сформирован: {IsFormed}");
 
             return info.ToString();
         }
@@ -232,15 +301,25 @@ namespace homework.OOP.TrainConfigurator
             return freeSeats;
         }
 
-        public void AddWagons(uint count)
+        public void Form(uint passengersCount)
+        {
+            uint wagonsCount = (uint)Math.Ceiling((double)passengersCount / SeatsPerWagon);
+
+            AddWagons(wagonsCount, SeatsPerWagon);
+            FillWagons(passengersCount);
+
+            IsFormed = true;
+        }
+
+        private void AddWagons(uint count, uint allSeatsCount)
         {
             for (int i = 0; i < count; i++)
             {
-                Wagons.Add(new Wagon());
+                Wagons.Add(new Wagon(allSeatsCount));
             }
         }
 
-        public bool TryGetFreeSeat(out Seat freeSeat)
+        private bool TryGetFreeSeat(out Seat freeSeat)
         {
             freeSeat = null;
 
@@ -259,7 +338,7 @@ namespace homework.OOP.TrainConfigurator
             return false;
         }
 
-        public void FillWagons(uint passengersCount)
+        private void FillWagons(uint passengersCount)
         {
             for (int i = 0; i < passengersCount; i++)
             {
@@ -268,17 +347,6 @@ namespace homework.OOP.TrainConfigurator
                     seat.TakeSeat();
                 }
             }
-        }
-
-        public void Form(uint passengersCount)
-        {
-            uint seatsPerWagon = Wagon.AllSeatsCount;
-            uint wagonsCount = (uint)Math.Ceiling((double)passengersCount / seatsPerWagon);
-
-            AddWagons((uint)(wagonsCount - Wagons.Count));
-            FillWagons(passengersCount);
-
-            IsFormed = true;
         }
     }
 
@@ -290,37 +358,28 @@ namespace homework.OOP.TrainConfigurator
             Arrival = arrival;
         }
 
-        public string Departure { get; private set; }
-        public string Arrival { get; private set; }
+        private string Departure { get; set; }
+        private string Arrival { get; set; }
 
         public string GetInfo()
         {
-            string info;
-
-            if (Departure == default || Arrival == default)
-            {
-                info = ("Направление не создано");
-            }
-            else
-            {
-                info = ($"{Departure} - {Arrival}");
-            }
-
-            return info;
+            return ($"{Departure} - {Arrival}");
         }
     }
 
     class Wagon
     {
-        public Wagon()
+        public Wagon(uint allSeatsCount)
         {
-            Seats = new Seat[AllSeatsCount];
+            Seats = new Seat[allSeatsCount];
 
             for (var index = 0; index < Seats.Length; index++)
             {
                 Seats[index] = new Seat();
             }
         }
+
+        public Seat[] Seats { get; private set; }
 
         public uint GetCountOfFreeSeats()
         {
@@ -336,9 +395,6 @@ namespace homework.OOP.TrainConfigurator
 
             return countOfFreeSeats;
         }
-
-        public static readonly uint AllSeatsCount = 10;
-        public Seat[] Seats { get; private set; }
     }
 
     class Seat
