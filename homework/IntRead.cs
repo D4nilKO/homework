@@ -6,7 +6,7 @@ namespace homework
     {
         public static void Main1(string[] args)
         {
-            Console.WriteLine("Конвертированное число: " + ReadInt());
+            Console.WriteLine($"Конвертированное число: {ReadInt()}");
         }
 
         private static int ReadInt()
