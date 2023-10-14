@@ -5,7 +5,7 @@ namespace homework.OOP.GladiatorFights
 {
     internal static class Program
     {
-        public static void Main(string[] args)
+        public static void Main1(string[] args)
         {
             new Arena().Work();
         }
@@ -60,6 +60,17 @@ namespace homework.OOP.GladiatorFights
             Fight(_fighter1, _fighter2);
         }
 
+        public void Test()
+        {
+            for (int i = 0; i < _fighters.Count; i++)
+            {
+                for (int j = 0; j < _fighters.Count; j++)
+                {
+                    Fight(_fighters[i].Clone(),_fighters[j].Clone());
+                }
+            }
+        }
+
         private Fighter GetFighter()
         {
             bool success = false;
@@ -106,13 +117,15 @@ namespace homework.OOP.GladiatorFights
 
         private void Fight(Fighter fighter1, Fighter fighter2)
         {
-            int turnNumber = 1;
-
             if (fighter1.GetType() == fighter2.GetType())
             {
                 fighter1.Name = $"{fighter1.Name} 1";
                 fighter2.Name = $"{fighter2.Name} 2";
             }
+
+            Console.WriteLine($"Сейчас борятся {fighter1.Name} и {fighter2.Name}");
+            
+            int turnNumber = 1;
 
             while (fighter1.Health.IsAlive && fighter2.Health.IsAlive)
             {
@@ -289,7 +302,7 @@ namespace homework.OOP.GladiatorFights
 
         public Druid()
         {
-            Damage = 9;
+            Damage = 12;
             Health.SetMaxHealth(80);
 
             AttackCountForUseAbility = 3;
@@ -311,7 +324,7 @@ namespace homework.OOP.GladiatorFights
         {
             if (_attackNumber % AttackCountForUseAbility == 0)
             {
-                base.Attack(target);
+                target.Health.ApplyDamage(Damage);
             }
         }
     }
@@ -360,7 +373,7 @@ namespace homework.OOP.GladiatorFights
         {
             if (_riposteCount > 0)
             {
-                Attack(target);
+                target.Health.ApplyDamage(Damage);
                 _riposteCount--;
             }
         }
