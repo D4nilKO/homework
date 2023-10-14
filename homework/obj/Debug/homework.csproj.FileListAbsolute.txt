@@ -12,3 +12,10 @@ C:\Users\Danil\Desktop\homework\homework\obj\Debug\homework.csproj.SuggestedBind
 C:\Users\Danil\Desktop\homework\homework\obj\Debug\homework.csproj.CoreCompileInputs.cache
 C:\Users\Danil\Desktop\homework\homework\obj\Debug\homework.exe
 C:\Users\Danil\Desktop\homework\homework\obj\Debug\homework.pdb
+D:\Projects\homework\homework\bin\Debug\homework.exe
+D:\Projects\homework\homework\bin\Debug\homework.pdb
+D:\Projects\homework\homework\obj\Debug\homework.csproj.AssemblyReference.cache
+D:\Projects\homework\homework\obj\Debug\homework.csproj.SuggestedBindingRedirects.cache
+D:\Projects\homework\homework\obj\Debug\homework.csproj.CoreCompileInputs.cache
+D:\Projects\homework\homework\obj\Debug\homework.exe
+D:\Projects\homework\homework\obj\Debug\homework.pdb

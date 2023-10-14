@@ -66,7 +66,7 @@ namespace homework.OOP.GladiatorFights
             {
                 for (int j = 0; j < _fighters.Count; j++)
                 {
-                    Fight(_fighters[i].Clone(),_fighters[j].Clone());
+                    Fight(_fighters[i].Clone(), _fighters[j].Clone());
                 }
             }
         }
@@ -124,7 +124,7 @@ namespace homework.OOP.GladiatorFights
             }
 
             Console.WriteLine($"Сейчас борятся {fighter1.Name} и {fighter2.Name}");
-            
+
             int turnNumber = 1;
 
             while (fighter1.Health.IsAlive && fighter2.Health.IsAlive)
@@ -132,16 +132,13 @@ namespace homework.OOP.GladiatorFights
                 Console.WriteLine();
                 Console.WriteLine($"Сейчас ход №{turnNumber}.");
 
-                fighter1.Attack(fighter2);
+                fighter1.MakeMove(fighter2);
                 fighter2.ShowInfo();
 
-                fighter2.Attack(fighter1);
+                fighter2.MakeMove(fighter1);
                 fighter1.ShowInfo();
 
                 turnNumber++;
-
-                Console.WriteLine("Нажмите любую клавишу для продолжения... ");
-                Console.ReadKey();
             }
 
             Fighter winner = fighter2.Health.IsAlive
@@ -163,7 +160,7 @@ namespace homework.OOP.GladiatorFights
 
         public string Name { get; set; }
         protected float Damage { get; set; }
-        
+
         public abstract Fighter Clone();
 
         public void ShowInfo()
@@ -172,13 +169,18 @@ namespace homework.OOP.GladiatorFights
             Console.WriteLine($"Атака {Name} = {Damage}");
         }
 
-        public virtual void Attack(Fighter target)
+        public virtual void MakeMove(Fighter target)
         {
             if (Health.IsAlive == false)
                 return;
 
-            target.Health.ApplyDamage(Damage);
             UseAbility(target);
+            Attack(target);
+        }
+
+        protected virtual void Attack(Fighter target)
+        {
+            target.Health.ApplyDamage(Damage);
         }
 
         protected abstract void UseAbility(Fighter target);
@@ -200,7 +202,7 @@ namespace homework.OOP.GladiatorFights
             _fireballManaCost = 15;
         }
 
-        public override void Attack(Fighter target)
+        public override void MakeMove(Fighter target)
         {
             if (EnoughMana(_fireballManaCost))
             {
@@ -208,7 +210,7 @@ namespace homework.OOP.GladiatorFights
                 return;
             }
 
-            target.Health.ApplyDamage(Damage);
+            Attack(target);
         }
 
         public override Fighter Clone()
@@ -309,7 +311,7 @@ namespace homework.OOP.GladiatorFights
             _attackNumber = 0;
         }
 
-        public override void Attack(Fighter target)
+        protected override void Attack(Fighter target)
         {
             base.Attack(target);
             _attackNumber++;
@@ -324,7 +326,7 @@ namespace homework.OOP.GladiatorFights
         {
             if (_attackNumber % AttackCountForUseAbility == 0)
             {
-                target.Health.ApplyDamage(Damage);
+                Attack(target);
             }
         }
     }
@@ -373,7 +375,7 @@ namespace homework.OOP.GladiatorFights
         {
             if (_riposteCount > 0)
             {
-                target.Health.ApplyDamage(Damage);
+                Attack(target);
                 _riposteCount--;
             }
         }
@@ -398,7 +400,7 @@ namespace homework.OOP.GladiatorFights
             get => _damageMultiplier;
             set => _damageMultiplier = Math.Max(0, value);
         }
-        
+
         public bool IsAlive => CurrentHealth > 0;
 
         public float CurrentHealth
