@@ -13,8 +13,6 @@ namespace homework.OOP.Supermarket
 
     class Supermarket
     {
-        private Random _random = new();
-
         private List<Client> _clients = new();
 
         private List<Product> _allProducts = new()
@@ -59,11 +57,12 @@ namespace homework.OOP.Supermarket
                 Client client = GetFirstClient();
 
                 client.ShowInfo();
-
-                client.PayOff(_random);
-
+                client.PayOff();
+                
                 _clients.Remove(client);
             }
+
+            Console.WriteLine("\nМагазин обслужил всех клиентов");
         }
 
         private Client GetFirstClient()
@@ -73,15 +72,14 @@ namespace homework.OOP.Supermarket
 
         private void CreateClients()
         {
-            int minRandomClientsCount = 5;
-            int maxRandomClientsCount = 10;
-            // int clientsCount = _random.Next(minRandomClientsCount, maxRandomClientsCount);
-            int clientsCount = 2;
+            int minRandomClientsCount = 3;
+            int maxRandomClientsCount = 6;
+            int clientsCount = UserUtils.GetRandomNumber(minRandomClientsCount, maxRandomClientsCount);
 
             for (int i = 0; i < clientsCount; i++)
             {
-                string clientName = _names[_random.Next(0, _names.Count)];
-                Client client = new(clientName, _random, _allProducts);
+                string clientName = _names[UserUtils.GetRandomNumber(_names.Count)];
+                Client client = new(clientName, _allProducts);
 
                 _clients.Add(client);
             }
@@ -91,36 +89,34 @@ namespace homework.OOP.Supermarket
     class Client
     {
         private ShoppingCart _shoppingCart = new();
+        private string _name;
+        private int _money;
 
-        public Client(string name, Random random, List<Product> allProducts)
+        public Client(string name, List<Product> allProducts)
         {
-            Name = name;
-            GainMoney(random);
+            _name = name;
+            GainMoney();
             FillShoppingCart(allProducts);
         }
 
-        public string Name { get; private set; }
-
-        public int Money { get; private set; }
-
-        public void PayOff(Random random)
+        public void PayOff()
         {
-            while (Money < GetPurchaseAmount())
+            while (_money < GetPurchaseAmount())
             {
                 if (_shoppingCart.Empty)
                 {
-                    Console.WriteLine($"Корзина пуста, а я ничего не купил ");
+                    Console.WriteLine($"Больше нечего выкладывать, мне не хватило денег на еду( ");
                     return;
                 }
 
-                _shoppingCart.RemoveRandomProduct(random);
+                _shoppingCart.RemoveRandomProduct();
             }
 
-            int productsCountToPurchase = _shoppingCart.Products.Count;
+            int productsCountToPurchase = _shoppingCart.Count;
 
             for (int i = 0; i < productsCountToPurchase; i++)
             {
-                Product product = _shoppingCart.Products[0];
+                Product product = _shoppingCart.GetProducts()[0];
                 Buy(product);
             }
 
@@ -130,7 +126,7 @@ namespace homework.OOP.Supermarket
         public void ShowInfo()
         {
             Console.Write("\n-----------------------------");
-            Console.Write($"\nКлиент: {Name} - ");
+            Console.Write($"\nКлиент: {_name} - ");
 
             if (_shoppingCart.Empty)
             {
@@ -140,7 +136,7 @@ namespace homework.OOP.Supermarket
 
             Console.WriteLine(" хранит в корзине предметы:\n");
 
-            foreach (Product product in _shoppingCart.Products)
+            foreach (Product product in _shoppingCart.GetProducts())
             {
                 product.ShowInfo();
                 Console.WriteLine();
@@ -149,14 +145,14 @@ namespace homework.OOP.Supermarket
             Console.WriteLine();
 
             Console.WriteLine($"Сумма покупки: {GetPurchaseAmount()}");
-            Console.WriteLine($"Денег в кошельке {Money}");
+            Console.WriteLine($"Денег в кошельке {_money}");
 
             Console.WriteLine();
         }
 
         private void Buy(Product product)
         {
-            Money -= product.Price;
+            _money -= product.Price;
             _shoppingCart.RemoveProduct(product);
 
             Console.Write("Я купил ");
@@ -168,7 +164,7 @@ namespace homework.OOP.Supermarket
         {
             int sum = 0;
 
-            foreach (Product product in _shoppingCart.Products)
+            foreach (Product product in _shoppingCart.GetProducts())
             {
                 sum += product.Price;
             }
@@ -176,55 +172,58 @@ namespace homework.OOP.Supermarket
             return sum;
         }
 
-        private void GainMoney(Random random)
+        private void GainMoney()
         {
             int minRandomMoneyCount = 200;
             int maxRandomMoneyCount = 500;
 
-            Money = random.Next(minRandomMoneyCount, maxRandomMoneyCount);
+            _money = UserUtils.GetRandomNumber(minRandomMoneyCount, maxRandomMoneyCount);
         }
 
-        private void FillShoppingCart(List<Product> products)
+        private void FillShoppingCart(List<Product> allProducts)
         {
-            Random random = new();
-
-            int minRandomProduct = 0;
-            int maxRandomProduct = products.Count;
-
             int minProductsCount = 3;
             int maxProductsCount = 8;
 
-            int productsCount = random.Next(minProductsCount, maxProductsCount+1);
+            int count = UserUtils.GetRandomNumber(minProductsCount, maxProductsCount + 1);
 
-            for (int i = 0; i < productsCount; i++)
+            for (int i = 0; i < count; i++)
             {
-                int numberOfProduct = random.Next(minRandomProduct, maxRandomProduct);
-                Product product = products[numberOfProduct];
+                int index = UserUtils.GetRandomNumber(allProducts.Count);
+                Product product = allProducts[index];
 
                 _shoppingCart.AddProduct(product);
             }
+
+            Console.WriteLine($"Количество продуктов: {_shoppingCart.Count}");
         }
     }
 
     class ShoppingCart
     {
-        public List<Product> Products { get; private set; } = new();
+        private List<Product> _products = new();
 
-        public bool Empty => Products.Count == 0;
+        public bool Empty => _products.Count == 0;
+        public int Count => _products.Count;
+
+        public List<Product> GetProducts()
+        {
+            return new List<Product>(_products);
+        }
 
         public void AddProduct(Product product)
         {
-            Products.Add(product);
+            _products.Add(product);
         }
 
         public void RemoveProduct(Product product)
         {
-            Products.Remove(product);
+            _products.Remove(product);
         }
 
-        public void RemoveRandomProduct(Random random)
+        public void RemoveRandomProduct()
         {
-            Product product = Products[random.Next(0, Products.Count)];
+            Product product = _products[UserUtils.GetRandomNumber(_products.Count)];
             RemoveProduct(product);
 
             product.ShowInfo();
