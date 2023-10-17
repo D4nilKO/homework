@@ -5,3 +5,4 @@ homework/bin/Debug/homework.pdb
 homework/obj/Debug/homework.exe
 homework/obj/Debug/homework.pdb
 homework/obj/Debug/homework.csproj.CoreCompileInputs.cache
+*.exe

@@ -58,7 +58,7 @@ namespace homework.OOP.Supermarket
 
                 client.ShowInfo();
                 client.PayOff();
-                
+
                 _clients.Remove(client);
             }
 
@@ -144,8 +144,8 @@ namespace homework.OOP.Supermarket
 
             Console.WriteLine();
 
-            Console.WriteLine($"Сумма покупки: {GetPurchaseAmount()}");
-            Console.WriteLine($"Денег в кошельке {_money}");
+            Console.WriteLine($"Сумма покупки: {GetPurchaseAmount()} рублей.");
+            Console.WriteLine($"Денег в кошельке: {_money} рублей.");
 
             Console.WriteLine();
         }
@@ -153,7 +153,9 @@ namespace homework.OOP.Supermarket
         private void Buy(Product product)
         {
             _money -= product.Price;
-            _shoppingCart.RemoveProduct(product);
+
+            if (_shoppingCart.TryRemoveProduct(product) == false)
+                return;
 
             Console.Write("Я купил ");
             product.ShowInfo();
@@ -216,15 +218,19 @@ namespace homework.OOP.Supermarket
             _products.Add(product);
         }
 
-        public void RemoveProduct(Product product)
+        public bool TryRemoveProduct(Product product)
         {
-            _products.Remove(product);
+            if (_products.Remove(product))
+                return true;
+
+            throw new NullReferenceException(
+                $"Вы хотите удалить такой товар, который найти не удалось: {product.Name}.");
         }
 
         public void RemoveRandomProduct()
         {
             Product product = _products[UserUtils.GetRandomNumber(_products.Count)];
-            RemoveProduct(product);
+            TryRemoveProduct(product);
 
             product.ShowInfo();
             Console.WriteLine(" удален из корзины.");
@@ -233,19 +239,18 @@ namespace homework.OOP.Supermarket
 
     class Product
     {
-        private string _name;
-
         public Product(string name, int price)
         {
-            _name = name;
+            Name = name;
             Price = price;
         }
 
+        public string Name { get; private set; }
         public int Price { get; private set; }
 
         public void ShowInfo()
         {
-            Console.Write($"{_name} - {Price} рублей.");
+            Console.Write($"{Name} - {Price} рублей.");
         }
     }
 }
