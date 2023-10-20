@@ -125,7 +125,7 @@ namespace homework.OOP.Store
 
         public void ViewAllItems()
         {
-            foreach (var product in Items)
+            foreach (Item product in Items)
             {
                 product.View();
             }
@@ -159,7 +159,7 @@ namespace homework.OOP.Store
 
             item = null;
 
-            foreach (var element in Items)
+            foreach (Item element in Items)
             {
                 if (element.Identifier.ToString() == identifier)
                 {

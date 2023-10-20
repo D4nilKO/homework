@@ -30,7 +30,7 @@ namespace homework
                     case CommandSum:
                         int sum = 0;
 
-                        foreach (var number in numbers)
+                        foreach (int number in numbers)
                         {
                             sum += number;
                         }

@@ -10,7 +10,7 @@ namespace homework
 
             int shift = 1;
 
-            foreach (var number in numbers)
+            foreach (int number in numbers)
             {
                 Console.Write(number + " ");
             }
@@ -29,7 +29,7 @@ namespace homework
 
             Console.WriteLine();
 
-            foreach (var number in numbers)
+            foreach (int number in numbers)
             {
                 Console.Write(number + " ");
             }

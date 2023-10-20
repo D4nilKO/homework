@@ -5,7 +5,7 @@ namespace homework.OOP.Supermarket
 {
     internal static class Program
     {
-        public static void Main(string[] args)
+        public static void Main1(string[] args)
         {
             new Supermarket().Work();
         }

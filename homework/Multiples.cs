@@ -11,7 +11,7 @@ namespace homework
             int loverCycleLimit = 99;
             int upperCycleLimit = 1000;
 
-            var random = new Random();
+            Random random = new Random();
             int number = random.Next(loverLimit, upperLimit + 1);
             Console.WriteLine($"Number = {number}");
 

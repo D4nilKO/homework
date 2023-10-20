@@ -205,7 +205,7 @@ namespace homework.OOP.BookStorage
         {
             for (int i = 0; i < _storage.Count; i++)
             {
-                var book = _storage[i];
+                Book book = _storage[i];
                 Console.Write($"(Книга №{i + 1}) - ");
                 book.View();
             }
@@ -213,7 +213,7 @@ namespace homework.OOP.BookStorage
 
         private void ViewAllBooks(List<Book> books)
         {
-            foreach (var book in books)
+            foreach (Book book in books)
             {
                 book.View();
             }
@@ -227,7 +227,7 @@ namespace homework.OOP.BookStorage
 
             book = null;
 
-            foreach (var element in _storage)
+            foreach (Book element in _storage)
             {
                 if (element.Identifier.ToString() == identifier)
                 {
@@ -281,7 +281,7 @@ namespace homework.OOP.BookStorage
 
             bool isFound = false;
 
-            foreach (var book in _storage)
+            foreach (Book book in _storage)
             {
                 if (book.Title.Contains(title))
                 {
@@ -305,7 +305,7 @@ namespace homework.OOP.BookStorage
 
             bool isFound = false;
 
-            foreach (var book in _storage)
+            foreach (Book book in _storage)
             {
                 if (book.Author.Contains(author))
                 {
@@ -328,7 +328,7 @@ namespace homework.OOP.BookStorage
 
             bool isFound = false;
 
-            foreach (var book in _storage)
+            foreach (Book book in _storage)
             {
                 if (book.ReleaseYear.ToString().Contains(releaseYear))
                 {

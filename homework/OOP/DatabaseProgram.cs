@@ -143,7 +143,7 @@ class Database
 
     public void ViewAllPlayers()
     {
-        foreach (var player in _players)
+        foreach (Player3 player in _players)
         {
             Console.WriteLine(
                 $"{player.Name} | Уровень: {player.CurrentLevel} | Бан статус: {player.IsBanned} | ID: {player.Identifier}");
@@ -154,7 +154,7 @@ class Database
     {
         player = default;
 
-        foreach (var element in _players)
+        foreach (Player3 element in _players)
         {
             if (string.Equals(element.Identifier.ToString(), identifier, StringComparison.Ordinal))
             {

@@ -86,7 +86,7 @@ namespace homework
 
         private static string[] RemoveElementAndGetArray(string[] array, int index)
         {
-            var temporaryArray = new string[array.Length - 1];
+            string[] temporaryArray = new string[array.Length - 1];
 
             for (int i = 0; i < index; i++)
             {

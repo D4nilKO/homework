@@ -167,7 +167,7 @@ namespace homework.OOP.Deck
         {
             Console.WriteLine("Ваши карты:");
 
-            foreach (var card in _hand)
+            foreach (Card card in _hand)
             {
                 card.Show();
             }

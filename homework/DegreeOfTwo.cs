@@ -6,7 +6,7 @@ namespace homework
     {
         public static void Main1(string[] args)
         {
-            var random = new Random();
+            Random random = new Random();
 
             int maxNumber = 1000;
             int number = random.Next(0, maxNumber);

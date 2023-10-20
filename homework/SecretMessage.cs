@@ -14,7 +14,7 @@ namespace homework
             for (int i = attempts; i > 0; i--)
             {
                 Console.WriteLine("Введите Пароль: ");
-                var testPassword = Console.ReadLine();
+                string testPassword = Console.ReadLine();
 
                 if (testPassword == password)
                 {

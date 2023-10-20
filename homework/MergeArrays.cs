@@ -14,7 +14,7 @@ internal static class MergeArrays
 
         mergedList = Merge(mergedList, array1, array2);
 
-        foreach (var substring in mergedList)
+        foreach (string substring in mergedList)
         {
             Console.Write(substring + " ");
         }

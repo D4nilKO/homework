@@ -9,7 +9,7 @@ namespace homework
             int firstDivisor = 3;
             int secondDivisor = 5;
 
-            var random = new Random();
+            Random random = new Random();
             int number = random.Next(0, 100);
 
             int sum = 0;

@@ -6,7 +6,7 @@ namespace homework
     {
         public static void Main1(string[] args)
         {
-            var random = new Random();
+            Random random = new Random();
 
             int size = 30;
             int[] array = new int[size];
