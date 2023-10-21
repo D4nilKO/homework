@@ -1,31 +1,30 @@
 ﻿using System;
 
-namespace homework
+namespace homework;
+
+internal static class SecretMessage
 {
-    internal static class SecretMessage
+    public static void Main1(string[] args)
     {
-        public static void Main1(string[] args)
+        string password = "123";
+        string secretMessage = "Убийца - Дворецкий!";
+
+        int attempts = 3;
+
+        for (int i = attempts; i > 0; i--)
         {
-            string password = "123";
-            string secretMessage = "Убийца - Дворецкий!";
+            Console.WriteLine("Введите Пароль: ");
+            string testPassword = Console.ReadLine();
 
-            int attempts = 3;
-
-            for (int i = attempts; i > 0; i--)
+            if (testPassword == password)
             {
-                Console.WriteLine("Введите Пароль: ");
-                string testPassword = Console.ReadLine();
+                Console.WriteLine(secretMessage);
+                break;
+            }
 
-                if (testPassword == password)
-                {
-                    Console.WriteLine(secretMessage);
-                    break;
-                }
-
-                if (i - 1 != 0)
-                {
-                    Console.WriteLine($"У вас осталось {i - 1} попыток, попробуйте еще");
-                }
+            if (i - 1 != 0)
+            {
+                Console.WriteLine($"У вас осталось {i - 1} попыток, попробуйте еще");
             }
         }
     }

@@ -1,21 +1,20 @@
 ﻿using System;
 
-namespace homework
+namespace homework;
+
+internal static class Split
 {
-    internal static class Split
+    public static void Main1(string[] args)
     {
-        public static void Main1(string[] args)
-        {
-            string text = Console.ReadLine();
+        string text = Console.ReadLine();
 
-            char separatorSymbol = ' ';
+        char separatorSymbol = ' ';
             
-            string[] words = text.Split(separatorSymbol);
+        string[] words = text.Split(separatorSymbol);
 
-            foreach (string word in words)
-            {
-                Console.WriteLine(word);
-            }
+        foreach (string word in words)
+        {
+            Console.WriteLine(word);
         }
     }
 }

@@ -57,6 +57,7 @@
         <Compile Include="Multiples.cs" />
         <Compile Include="NameInFrame.cs" />
         <Compile Include="NumberSum.cs" />
+        <Compile Include="OOP\Auqarium.cs" />
         <Compile Include="OOP\BookStorageProgram.cs" />
         <Compile Include="OOP\DatabaseProgram.cs" />
         <Compile Include="OOP\DeckProgram.cs" />

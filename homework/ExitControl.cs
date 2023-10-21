@@ -1,18 +1,17 @@
 ﻿using System;
 
-namespace homework
+namespace homework;
+
+internal static class ExitControl
 {
-    internal static class ExitControl
+    public static void Main1(string[] args)
     {
-        public static void Main1(string[] args)
-        {
-            string stopMessage = "exit";
-            string message = "";
+        string stopMessage = "exit";
+        string message = "";
             
-            while (message != null && message.ToLower() != stopMessage)
-            {
-                message = Console.ReadLine();
-            }
+        while (message != null && message.ToLower() != stopMessage)
+        {
+            message = Console.ReadLine();
         }
     }
 }

@@ -1,32 +1,31 @@
 ﻿using System;
 
-namespace homework
+namespace homework;
+
+internal static class NumberSum
 {
-    internal static class NumberSum
+    public static void Main1(string[] args)
     {
-        public static void Main1(string[] args)
+        int firstDivisor = 3;
+        int secondDivisor = 5;
+
+        Random random = new Random();
+        int number = random.Next(0, 100);
+
+        int sum = 0;
+
+        Console.WriteLine($"number = {number}");
+
+        for (int i = 1; i <= number; i++)
         {
-            int firstDivisor = 3;
-            int secondDivisor = 5;
-
-            Random random = new Random();
-            int number = random.Next(0, 100);
-
-            int sum = 0;
-
-            Console.WriteLine($"number = {number}");
-
-            for (int i = 1; i <= number; i++)
+            if ((i % firstDivisor == 0) || (i % secondDivisor == 0))
             {
-                if ((i % firstDivisor == 0) || (i % secondDivisor == 0))
-                {
-                    Console.Write($"{sum} + {i} = ");
-                    sum += i;
-                    Console.WriteLine(sum);
-                }
+                Console.Write($"{sum} + {i} = ");
+                sum += i;
+                Console.WriteLine(sum);
             }
-
-            Console.WriteLine($"sum = {sum}");
         }
+
+        Console.WriteLine($"sum = {sum}");
     }
 }

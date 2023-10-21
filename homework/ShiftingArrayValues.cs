@@ -1,38 +1,37 @@
 ﻿using System;
 
-namespace homework
+namespace homework;
+
+internal static class ShiftingArrayValues
 {
-    internal static class ShiftingArrayValues
+    public static void Main1(string[] args)
     {
-        public static void Main1(string[] args)
+        int[] numbers = { 1, 2, 3, 4 };
+
+        int shift = 1;
+
+        foreach (int number in numbers)
         {
-            int[] numbers = { 1, 2, 3, 4 };
+            Console.Write(number + " ");
+        }
 
-            int shift = 1;
+        for (int i = 0; i < shift; i++)
+        {
+            int firstElement = numbers[0];
 
-            foreach (int number in numbers)
+            for (int j = 0; j < numbers.Length - 1; j++)
             {
-                Console.Write(number + " ");
+                numbers[j] = numbers[j + 1];
             }
 
-            for (int i = 0; i < shift; i++)
-            {
-                int firstElement = numbers[0];
+            numbers[numbers.Length - 1] = firstElement;
+        }
 
-                for (int j = 0; j < numbers.Length - 1; j++)
-                {
-                    numbers[j] = numbers[j + 1];
-                }
+        Console.WriteLine();
 
-                numbers[numbers.Length - 1] = firstElement;
-            }
-
-            Console.WriteLine();
-
-            foreach (int number in numbers)
-            {
-                Console.Write(number + " ");
-            }
+        foreach (int number in numbers)
+        {
+            Console.Write(number + " ");
         }
     }
 }

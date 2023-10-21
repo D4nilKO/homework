@@ -1,457 +1,456 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace homework.OOP.GladiatorFights
+namespace homework.OOP.GladiatorFights;
+
+internal static class Program
 {
-    internal static class Program
+    public static void Main1(string[] args)
     {
-        public static void Main1(string[] args)
+        new Arena().Work();
+    }
+}
+
+class Arena
+{
+    private const int CommandWizard = 1;
+    private const int CommandBerserk = 2;
+    private const int CommandPaladin = 3;
+    private const int CommandDruid = 4;
+    private const int CommandWarrior = 5;
+
+    private Fighter _fighter1;
+    private Fighter _fighter2;
+
+    private Dictionary<int, string> _actionsByCommand = new()
+    {
+        { CommandWizard, "Выбрать Wizard" },
+        { CommandBerserk, "Выбрать Berserk" },
+        { CommandPaladin, "Выбрать Paladin" },
+        { CommandDruid, "Выбрать Druid" },
+        { CommandWarrior, "Выбрать Warrior" },
+    };
+
+    private List<Fighter> _fighters = new()
+    {
+        new Wizard(),
+        new Berserk(),
+        new Paladin(),
+        new Druid(),
+        new Warrior()
+    };
+
+    public void Work()
+    {
+        Console.Clear();
+        Console.WriteLine();
+        Console.WriteLine("\nМеню:");
+
+        foreach (KeyValuePair<int, string> option in _actionsByCommand)
         {
-            new Arena().Work();
+            Console.WriteLine($"{option.Key} - {option.Value}");
+        }
+
+        Console.Write("\nВыберете первого бойца, ");
+        _fighter1 = GetFighter();
+
+        Console.Write("\nВыберете второго бойца, ");
+        _fighter2 = GetFighter();
+
+        Fight(_fighter1, _fighter2);
+    }
+
+    public void Test()
+    {
+        for (int i = 0; i < _fighters.Count; i++)
+        {
+            for (int j = 0; j < _fighters.Count; j++)
+            {
+                Fight(_fighters[i].Clone(), _fighters[j].Clone());
+            }
         }
     }
 
-    class Arena
+    private Fighter GetFighter()
     {
-        private const int CommandWizard = 1;
-        private const int CommandBerserk = 2;
-        private const int CommandPaladin = 3;
-        private const int CommandDruid = 4;
-        private const int CommandWarrior = 5;
+        bool success = false;
 
-        private Fighter _fighter1;
-        private Fighter _fighter2;
+        int numberOfFighter = -1;
 
-        private Dictionary<int, string> _actionsByCommand = new()
+        while (success == false)
         {
-            { CommandWizard, "Выбрать Wizard" },
-            { CommandBerserk, "Выбрать Berserk" },
-            { CommandPaladin, "Выбрать Paladin" },
-            { CommandDruid, "Выбрать Druid" },
-            { CommandWarrior, "Выбрать Warrior" },
-        };
+            numberOfFighter = ReadInt() - 1;
 
-        private List<Fighter> _fighters = new()
-        {
-            new Wizard(),
-            new Berserk(),
-            new Paladin(),
-            new Druid(),
-            new Warrior()
-        };
+            if ((numberOfFighter >= 0) && (numberOfFighter < _fighters.Count))
+            {
+                success = true;
+            }
+            else
+            {
+                Console.WriteLine("Такого бойца нет.");
+            }
+        }
 
-        public void Work()
+        Fighter fighter = _fighters[numberOfFighter].Clone();
+
+        Console.WriteLine($"Вы выбрали персонажа {fighter.Name}");
+
+        return fighter;
+    }
+
+    private int ReadInt()
+    {
+        Console.WriteLine("Введите число: ");
+
+        bool success = false;
+        int number = 0;
+
+        while (success == false)
         {
-            Console.Clear();
+            string message = Console.ReadLine();
+
+            success = int.TryParse(message, out number);
+        }
+
+        return number;
+    }
+
+    private void Fight(Fighter fighter1, Fighter fighter2)
+    {
+        if (fighter1.GetType() == fighter2.GetType())
+        {
+            fighter1.Name = $"{fighter1.Name} 1";
+            fighter2.Name = $"{fighter2.Name} 2";
+        }
+
+        Console.WriteLine($"Сейчас борятся {fighter1.Name} и {fighter2.Name}");
+
+        int turnNumber = 1;
+
+        while (fighter1.Health.IsAlive && fighter2.Health.IsAlive)
+        {
             Console.WriteLine();
-            Console.WriteLine("\nМеню:");
+            Console.WriteLine($"Сейчас ход №{turnNumber}.");
 
-            foreach (KeyValuePair<int, string> option in _actionsByCommand)
-            {
-                Console.WriteLine($"{option.Key} - {option.Value}");
-            }
+            fighter1.MakeMove(fighter2);
+            fighter2.ShowInfo();
 
-            Console.Write("\nВыберете первого бойца, ");
-            _fighter1 = GetFighter();
+            fighter2.MakeMove(fighter1);
+            fighter1.ShowInfo();
 
-            Console.Write("\nВыберете второго бойца, ");
-            _fighter2 = GetFighter();
-
-            Fight(_fighter1, _fighter2);
+            turnNumber++;
         }
 
-        public void Test()
-        {
-            for (int i = 0; i < _fighters.Count; i++)
-            {
-                for (int j = 0; j < _fighters.Count; j++)
-                {
-                    Fight(_fighters[i].Clone(), _fighters[j].Clone());
-                }
-            }
-        }
+        Fighter winner = fighter2.Health.IsAlive
+            ? fighter2
+            : fighter1;
 
-        private Fighter GetFighter()
-        {
-            bool success = false;
+        Console.WriteLine($"Персонаж {winner.Name} выиграл!");
+    }
+}
 
-            int numberOfFighter = -1;
+abstract class Fighter
+{
+    public Health Health = new();
 
-            while (success == false)
-            {
-                numberOfFighter = ReadInt() - 1;
-
-                if ((numberOfFighter >= 0) && (numberOfFighter < _fighters.Count))
-                {
-                    success = true;
-                }
-                else
-                {
-                    Console.WriteLine("Такого бойца нет.");
-                }
-            }
-
-            Fighter fighter = _fighters[numberOfFighter].Clone();
-
-            Console.WriteLine($"Вы выбрали персонажа {fighter.Name}");
-
-            return fighter;
-        }
-
-        private int ReadInt()
-        {
-            Console.WriteLine("Введите число: ");
-
-            bool success = false;
-            int number = 0;
-
-            while (success == false)
-            {
-                string message = Console.ReadLine();
-
-                success = int.TryParse(message, out number);
-            }
-
-            return number;
-        }
-
-        private void Fight(Fighter fighter1, Fighter fighter2)
-        {
-            if (fighter1.GetType() == fighter2.GetType())
-            {
-                fighter1.Name = $"{fighter1.Name} 1";
-                fighter2.Name = $"{fighter2.Name} 2";
-            }
-
-            Console.WriteLine($"Сейчас борятся {fighter1.Name} и {fighter2.Name}");
-
-            int turnNumber = 1;
-
-            while (fighter1.Health.IsAlive && fighter2.Health.IsAlive)
-            {
-                Console.WriteLine();
-                Console.WriteLine($"Сейчас ход №{turnNumber}.");
-
-                fighter1.MakeMove(fighter2);
-                fighter2.ShowInfo();
-
-                fighter2.MakeMove(fighter1);
-                fighter1.ShowInfo();
-
-                turnNumber++;
-            }
-
-            Fighter winner = fighter2.Health.IsAlive
-                ? fighter2
-                : fighter1;
-
-            Console.WriteLine($"Персонаж {winner.Name} выиграл!");
-        }
+    protected Fighter()
+    {
+        Name = GetType().Name;
     }
 
-    abstract class Fighter
+    public string Name { get; set; }
+    protected float Damage { get; set; }
+
+    public abstract Fighter Clone();
+
+    public void ShowInfo()
     {
-        public Health Health = new();
+        Console.WriteLine($"\nПерсонаж {Name} имеет {Health.CurrentHealth} из {Health.MaxHealth} здоровья");
+        Console.WriteLine($"Атака {Name} = {Damage}");
+    }
 
-        protected Fighter()
+    public virtual void MakeMove(Fighter target)
+    {
+        if (Health.IsAlive == false)
+            return;
+
+        UseAbility(target);
+        Attack(target);
+    }
+
+    protected virtual void Attack(Fighter target)
+    {
+        target.Health.ApplyDamage(Damage);
+    }
+
+    protected abstract void UseAbility(Fighter target);
+}
+
+class Wizard : Fighter
+{
+    private float _mana;
+    private float _fireballDamage;
+    private float _fireballManaCost;
+
+    public Wizard()
+    {
+        Damage = 1;
+        Health.SetMaxHealth(40);
+
+        _mana = 100;
+        _fireballDamage = 20;
+        _fireballManaCost = 15;
+    }
+
+    public override void MakeMove(Fighter target)
+    {
+        if (EnoughMana(_fireballManaCost))
         {
-            Name = GetType().Name;
-        }
-
-        public string Name { get; set; }
-        protected float Damage { get; set; }
-
-        public abstract Fighter Clone();
-
-        public void ShowInfo()
-        {
-            Console.WriteLine($"\nПерсонаж {Name} имеет {Health.CurrentHealth} из {Health.MaxHealth} здоровья");
-            Console.WriteLine($"Атака {Name} = {Damage}");
-        }
-
-        public virtual void MakeMove(Fighter target)
-        {
-            if (Health.IsAlive == false)
-                return;
-
             UseAbility(target);
+            return;
+        }
+
+        Attack(target);
+    }
+
+    public override Fighter Clone()
+    {
+        return new Wizard();
+    }
+
+    protected override void UseAbility(Fighter target)
+    {
+        target.Health.ApplyDamage(_fireballDamage);
+    }
+
+    private bool EnoughMana(float manaCost)
+    {
+        if (_mana >= manaCost)
+        {
+            _mana -= manaCost;
+            return true;
+        }
+
+        return false;
+    }
+}
+
+class Berserk : Fighter
+{
+    private bool _damageIncreased;
+    private float _extraDamage;
+    private int _dividerBerserkMode;
+    private float _berserkModeHealthLevel;
+
+    public Berserk()
+    {
+        Damage = 10;
+        Health.SetMaxHealth(80);
+
+        _damageIncreased = false;
+        _extraDamage = 15;
+        _dividerBerserkMode = 2;
+        _berserkModeHealthLevel = Health.MaxHealth / _dividerBerserkMode;
+    }
+
+    protected override void UseAbility(Fighter target)
+    {
+        if ((_damageIncreased == false) && (Health.CurrentHealth <= _berserkModeHealthLevel))
+        {
+            Damage += _extraDamage;
+            _damageIncreased = true;
+        }
+    }
+
+    public override Fighter Clone()
+    {
+        return new Berserk();
+    }
+}
+
+class Paladin : Fighter
+{
+    private float _healValue;
+    private int _abilityCharges;
+
+    public Paladin()
+    {
+        Damage = 8;
+        Health.SetMaxHealth(70);
+
+        _healValue = 10;
+        _abilityCharges = 3;
+    }
+
+    public override Fighter Clone()
+    {
+        return new Paladin();
+    }
+
+    protected override void UseAbility(Fighter target)
+    {
+        if ((Health.CurrentHealth <= Health.MaxHealth - _healValue) && (_abilityCharges > 0))
+        {
+            Health.Heal(_healValue);
+            _abilityCharges--;
+        }
+    }
+}
+
+class Druid : Fighter
+{
+    private int AttackCountForUseAbility { get; }
+    private int _attackNumber;
+
+    public Druid()
+    {
+        Damage = 12;
+        Health.SetMaxHealth(80);
+
+        AttackCountForUseAbility = 3;
+        _attackNumber = 0;
+    }
+
+    protected override void Attack(Fighter target)
+    {
+        base.Attack(target);
+        _attackNumber++;
+    }
+
+    public override Fighter Clone()
+    {
+        return new Druid();
+    }
+
+    protected override void UseAbility(Fighter target)
+    {
+        if (_attackNumber % AttackCountForUseAbility == 0)
+        {
             Attack(target);
         }
+    }
+}
 
-        protected virtual void Attack(Fighter target)
-        {
-            target.Health.ApplyDamage(Damage);
-        }
+class Warrior : Fighter
+{
+    private int _counterHitsOnMe;
+    private int _riposteCount;
 
-        protected abstract void UseAbility(Fighter target);
+    public Warrior()
+    {
+        Damage = 10;
+        Health.SetMaxHealth(100);
+
+        Health.DamageMultiplier = 0.8f;
+        Health.OnDamageApplied += IncreaseCounterHitsOnMe;
     }
 
-    class Wizard : Fighter
+    ~Warrior()
     {
-        private float _mana;
-        private float _fireballDamage;
-        private float _fireballManaCost;
+        Health.OnDamageApplied -= IncreaseCounterHitsOnMe;
+    }
 
-        public Wizard()
+    public override Fighter Clone()
+    {
+        return new Warrior();
+    }
+
+    protected override void UseAbility(Fighter target)
+    {
+        if (_counterHitsOnMe >= 4)
         {
-            Damage = 1;
-            Health.SetMaxHealth(40);
-
-            _mana = 100;
-            _fireballDamage = 20;
-            _fireballManaCost = 15;
+            _counterHitsOnMe -= 4;
+            _riposteCount++;
         }
 
-        public override void MakeMove(Fighter target)
-        {
-            if (EnoughMana(_fireballManaCost))
-            {
-                UseAbility(target);
-                return;
-            }
+        TryRiposte(target);
+    }
 
+    private void IncreaseCounterHitsOnMe()
+    {
+        _counterHitsOnMe++;
+    }
+
+    private void TryRiposte(Fighter target)
+    {
+        if (_riposteCount > 0)
+        {
             Attack(target);
-        }
-
-        public override Fighter Clone()
-        {
-            return new Wizard();
-        }
-
-        protected override void UseAbility(Fighter target)
-        {
-            target.Health.ApplyDamage(_fireballDamage);
-        }
-
-        private bool EnoughMana(float manaCost)
-        {
-            if (_mana >= manaCost)
-            {
-                _mana -= manaCost;
-                return true;
-            }
-
-            return false;
+            _riposteCount--;
         }
     }
+}
 
-    class Berserk : Fighter
+class Health
+{
+    private float _currentHealth;
+    private float _damageMultiplier = 1;
+
+    public Health()
     {
-        private bool _damageIncreased;
-        private float _extraDamage;
-        private int _dividerBerserkMode;
-        private float _berserkModeHealthLevel;
-
-        public Berserk()
-        {
-            Damage = 10;
-            Health.SetMaxHealth(80);
-
-            _damageIncreased = false;
-            _extraDamage = 15;
-            _dividerBerserkMode = 2;
-            _berserkModeHealthLevel = Health.MaxHealth / _dividerBerserkMode;
-        }
-
-        protected override void UseAbility(Fighter target)
-        {
-            if ((_damageIncreased == false) && (Health.CurrentHealth <= _berserkModeHealthLevel))
-            {
-                Damage += _extraDamage;
-                _damageIncreased = true;
-            }
-        }
-
-        public override Fighter Clone()
-        {
-            return new Berserk();
-        }
+        UpdateHealthToMax();
     }
 
-    class Paladin : Fighter
+    public event Action OnDamageApplied;
+
+    public float MaxHealth { get; private set; }
+
+    public float DamageMultiplier
     {
-        private float _healValue;
-        private int _abilityCharges;
-
-        public Paladin()
-        {
-            Damage = 8;
-            Health.SetMaxHealth(70);
-
-            _healValue = 10;
-            _abilityCharges = 3;
-        }
-
-        public override Fighter Clone()
-        {
-            return new Paladin();
-        }
-
-        protected override void UseAbility(Fighter target)
-        {
-            if ((Health.CurrentHealth <= Health.MaxHealth - _healValue) && (_abilityCharges > 0))
-            {
-                Health.Heal(_healValue);
-                _abilityCharges--;
-            }
-        }
+        get => _damageMultiplier;
+        set => _damageMultiplier = Math.Max(0, value);
     }
 
-    class Druid : Fighter
+    public bool IsAlive => CurrentHealth > 0;
+
+    public float CurrentHealth
     {
-        private int AttackCountForUseAbility { get; }
-        private int _attackNumber;
-
-        public Druid()
-        {
-            Damage = 12;
-            Health.SetMaxHealth(80);
-
-            AttackCountForUseAbility = 3;
-            _attackNumber = 0;
-        }
-
-        protected override void Attack(Fighter target)
-        {
-            base.Attack(target);
-            _attackNumber++;
-        }
-
-        public override Fighter Clone()
-        {
-            return new Druid();
-        }
-
-        protected override void UseAbility(Fighter target)
-        {
-            if (_attackNumber % AttackCountForUseAbility == 0)
-            {
-                Attack(target);
-            }
-        }
+        get => _currentHealth;
+        private set => _currentHealth = Clamp(value, 0f, MaxHealth);
     }
 
-    class Warrior : Fighter
+    public void Heal(float value)
     {
-        private int _counterHitsOnMe;
-        private int _riposteCount;
+        if (value < 0)
+            throw new ArgumentOutOfRangeException(nameof(value));
 
-        public Warrior()
-        {
-            Damage = 10;
-            Health.SetMaxHealth(100);
-
-            Health.DamageMultiplier = 0.8f;
-            Health.OnDamageApplied += IncreaseCounterHitsOnMe;
-        }
-
-        ~Warrior()
-        {
-            Health.OnDamageApplied -= IncreaseCounterHitsOnMe;
-        }
-
-        public override Fighter Clone()
-        {
-            return new Warrior();
-        }
-
-        protected override void UseAbility(Fighter target)
-        {
-            if (_counterHitsOnMe >= 4)
-            {
-                _counterHitsOnMe -= 4;
-                _riposteCount++;
-            }
-
-            TryRiposte(target);
-        }
-
-        private void IncreaseCounterHitsOnMe()
-        {
-            _counterHitsOnMe++;
-        }
-
-        private void TryRiposte(Fighter target)
-        {
-            if (_riposteCount > 0)
-            {
-                Attack(target);
-                _riposteCount--;
-            }
-        }
+        CurrentHealth += value;
     }
 
-    class Health
+    public void ApplyDamage(float damage)
     {
-        private float _currentHealth;
-        private float _damageMultiplier = 1;
+        if (damage < 0)
+            return;
 
-        public Health()
-        {
-            UpdateHealthToMax();
-        }
+        float totalDamage = ProcessDamage(damage);
 
-        public event Action OnDamageApplied;
+        if (totalDamage < 0)
+            throw new NullReferenceException(nameof(totalDamage));
 
-        public float MaxHealth { get; private set; }
+        CurrentHealth -= totalDamage;
 
-        public float DamageMultiplier
-        {
-            get => _damageMultiplier;
-            set => _damageMultiplier = Math.Max(0, value);
-        }
-
-        public bool IsAlive => CurrentHealth > 0;
-
-        public float CurrentHealth
-        {
-            get => _currentHealth;
-            private set => _currentHealth = Clamp(value, 0f, MaxHealth);
-        }
-
-        public void Heal(float value)
-        {
-            if (value < 0)
-                throw new ArgumentOutOfRangeException(nameof(value));
-
-            CurrentHealth += value;
-        }
-
-        public void ApplyDamage(float damage)
-        {
-            if (damage < 0)
-                return;
-
-            float totalDamage = ProcessDamage(damage);
-
-            if (totalDamage < 0)
-                throw new NullReferenceException(nameof(totalDamage));
-
-            CurrentHealth -= totalDamage;
-
-            OnDamageApplied?.Invoke();
-        }
-
-        public void SetMaxHealth(float maxHealth)
-        {
-            if (maxHealth <= 0)
-                throw new ArgumentOutOfRangeException(nameof(maxHealth));
-
-            MaxHealth = maxHealth;
-
-            UpdateHealthToMax();
-        }
-
-        private float Clamp(float value, float min, float max)
-        {
-            return Math.Max(min, Math.Min(value, max));
-        }
-
-        private void UpdateHealthToMax()
-        {
-            CurrentHealth = MaxHealth;
-        }
-
-        private float ProcessDamage(float damage) => damage * DamageMultiplier;
+        OnDamageApplied?.Invoke();
     }
+
+    public void SetMaxHealth(float maxHealth)
+    {
+        if (maxHealth <= 0)
+            throw new ArgumentOutOfRangeException(nameof(maxHealth));
+
+        MaxHealth = maxHealth;
+
+        UpdateHealthToMax();
+    }
+
+    private float Clamp(float value, float min, float max)
+    {
+        return Math.Max(min, Math.Min(value, max));
+    }
+
+    private void UpdateHealthToMax()
+    {
+        CurrentHealth = MaxHealth;
+    }
+
+    private float ProcessDamage(float damage) => damage * DamageMultiplier;
 }

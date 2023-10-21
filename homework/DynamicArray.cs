@@ -1,60 +1,59 @@
 ﻿using System;
 
-namespace homework
+namespace homework;
+
+internal static class DynamicArray
 {
-    internal static class DynamicArray
+    public static void Main1(string[] args)
     {
-        public static void Main1(string[] args)
+        const string CommandSum = "sum";
+        const string CommandExit = "exit";
+
+        string menuTextNumber = $"любое число - добавить это число к сумме";
+        string menuTextSum = $"{CommandSum} - Вывести сумму чисел";
+        string menuTextExit = $"{CommandExit} - Выйти из программы";
+
+        int[] numbers = new int[0];
+
+        string desiredOperation = "";
+
+        Console.WriteLine(menuTextNumber);
+        Console.WriteLine(menuTextSum);
+        Console.WriteLine(menuTextExit);
+
+        while (desiredOperation != CommandExit)
         {
-            const string CommandSum = "sum";
-            const string CommandExit = "exit";
+            desiredOperation = Console.ReadLine();
 
-            string menuTextNumber = $"любое число - добавить это число к сумме";
-            string menuTextSum = $"{CommandSum} - Вывести сумму чисел";
-            string menuTextExit = $"{CommandExit} - Выйти из программы";
-
-            int[] numbers = new int[0];
-
-            string desiredOperation = "";
-
-            Console.WriteLine(menuTextNumber);
-            Console.WriteLine(menuTextSum);
-            Console.WriteLine(menuTextExit);
-
-            while (desiredOperation != CommandExit)
+            switch (desiredOperation)
             {
-                desiredOperation = Console.ReadLine();
+                case CommandSum:
+                    int sum = 0;
 
-                switch (desiredOperation)
-                {
-                    case CommandSum:
-                        int sum = 0;
+                    foreach (int number in numbers)
+                    {
+                        sum += number;
+                    }
 
-                        foreach (int number in numbers)
-                        {
-                            sum += number;
-                        }
+                    Console.WriteLine($"Сумма чисел = {sum}");
+                    break;
 
-                        Console.WriteLine($"Сумма чисел = {sum}");
-                        break;
+                case CommandExit:
+                    Console.WriteLine("Выход...");
+                    break;
 
-                    case CommandExit:
-                        Console.WriteLine("Выход...");
-                        break;
+                default:
+                    int[] temporaryNumbers = new int[numbers.Length + 1];
 
-                    default:
-                        int[] temporaryNumbers = new int[numbers.Length + 1];
+                    for (int i = 0; i < numbers.Length; i++)
+                    {
+                        temporaryNumbers[i] = numbers[i];
+                    }
 
-                        for (int i = 0; i < numbers.Length; i++)
-                        {
-                            temporaryNumbers[i] = numbers[i];
-                        }
+                    temporaryNumbers[temporaryNumbers.Length - 1] = Convert.ToInt32(desiredOperation);
 
-                        temporaryNumbers[temporaryNumbers.Length - 1] = Convert.ToInt32(desiredOperation);
-
-                        numbers = temporaryNumbers;
-                        break;
-                }
+                    numbers = temporaryNumbers;
+                    break;
             }
         }
     }
