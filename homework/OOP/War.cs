@@ -160,12 +160,14 @@ class Squad
 
     public void RemoveDead()
     {
-        for (int i = 0; i < _soldiers.Count; i++)
+        for (int i = _soldiers.Count - 1; i >= 0; i--)
         {
-            if (_soldiers[i].Health <= 0)
+            Soldier soldier = _soldiers[i];
+            
+            if (soldier.Health <= 0)
             {
-                Console.WriteLine($"{_soldiers[i].Name} Погиб с честью!");
-                _soldiers.Remove(_soldiers[i]);
+                Console.WriteLine($"{soldier.Name} Погиб с честью!");
+                _soldiers.Remove(soldier);
             }
         }
     }

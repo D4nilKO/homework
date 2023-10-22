@@ -15,4 +15,31 @@ internal static class UserUtils
     {
         return s_random.Next(max);
     }
+
+    public static int GetNumberFromRange(int min, int max)
+    {
+        bool isLookingResult = true;
+        int result = 0;
+
+        Console.WriteLine($"Введите число от {min} до {max} включительно.");
+
+        while (isLookingResult)
+        {
+            if (int.TryParse(Console.ReadLine(), out result) == false)
+            {
+                Console.WriteLine("Некорректный ввод!");
+                continue;
+            }
+
+            if (result < min || result > max)
+            {
+                Console.WriteLine("Введенное число не входит в диапазон!");
+                continue;
+            }
+
+            isLookingResult = false;
+        }
+
+        return result;
+    }
 }
