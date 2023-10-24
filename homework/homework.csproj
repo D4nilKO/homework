@@ -58,6 +58,7 @@
         <Compile Include="NameInFrame.cs" />
         <Compile Include="NumberSum.cs" />
         <Compile Include="OOP\Auqarium.cs" />
+        <Compile Include="OOP\AutoService.cs" />
         <Compile Include="OOP\BookStorageProgram.cs" />
         <Compile Include="OOP\DatabaseProgram.cs" />
         <Compile Include="OOP\DeckProgram.cs" />
@@ -69,6 +70,7 @@
         <Compile Include="OOP\Supermarket.cs" />
         <Compile Include="OOP\TrainConfigurator.cs" />
         <Compile Include="OOP\War.cs" />
+        <Compile Include="OOP\Zoo.cs" />
         <Compile Include="ParenthesisExpression.cs" />
         <Compile Include="PersonnelAccounting.cs" />
         <Compile Include="IntRead.cs" />
@@ -79,6 +81,9 @@
         <Compile Include="Split.cs" />
         <Compile Include="SubArrayRepetitionsNumbers.cs" />
         <Compile Include="UserUtils.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="LINQ" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

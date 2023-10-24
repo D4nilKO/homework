@@ -16,8 +16,18 @@ internal static class UserUtils
         return s_random.Next(max);
     }
 
+    public static int GetNumberFromRange(int max)
+    {
+        return GetNumberFromRange(0, max);
+    }
+
     public static int GetNumberFromRange(int min, int max)
     {
+        if (min > max)
+        {
+            Console.WriteLine($"min > max | {min} > {max}");
+        }
+
         bool isLookingResult = true;
         int result = 0;
 

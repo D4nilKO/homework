@@ -1,57 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using static homework.OOP.Aquarium.UserUtils;
+using static homework.UserUtils;
 
 namespace homework.OOP.Aquarium;
 
 internal static class Program
 {
-    public static void Main(string[] args)
+    public static void Main1(string[] args)
     {
         new Zoo().Work();
-    }
-}
-
-internal static class UserUtils
-{
-    private static Random s_random = new();
-
-    public static int GetRandomNumber(int min, int max)
-    {
-        return s_random.Next(min, max);
-    }
-
-    public static int GetRandomNumber(int max)
-    {
-        return s_random.Next(max);
-    }
-
-    public static int GetNumberFromRange(int min, int max)
-    {
-        bool isLookingResult = true;
-        int result = 0;
-
-        Console.WriteLine($"Введите число от {min} до {max} включительно.");
-
-        while (isLookingResult)
-        {
-            if (int.TryParse(Console.ReadLine(), out result) == false)
-            {
-                Console.WriteLine("Некорректный ввод!");
-                continue;
-            }
-
-            if (result < min || result > max)
-            {
-                Console.WriteLine("Введенное число не входит в диапазон!");
-                continue;
-            }
-
-            isLookingResult = false;
-        }
-
-        return result;
     }
 }
 
@@ -183,7 +141,7 @@ class Aquarium
 
     public Aquarium(List<Fish> fishes)
     {
-        foreach (var fish in fishes)
+        foreach (Fish fish in fishes)
         {
             AddFish(fish.Clone());
         }
