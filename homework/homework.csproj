@@ -53,9 +53,12 @@
         <Compile Include="KansasCityShuffle.cs" />
         <Compile Include="LargestElement.cs" />
         <Compile Include="LINQ\Amnesty.cs" />
+        <Compile Include="LINQ\OverdueProductsDetection .cs" />
         <Compile Include="LINQ\HospitalAnarchy.cs" />
         <Compile Include="LINQ\SearchСriminal.cs" />
         <Compile Include="LINQ\TopServerPlayers.cs" />
+        <Compile Include="LINQ\TroopsUnification.cs" />
+        <Compile Include="LINQ\WeaponsReport.cs" />
         <Compile Include="LocalMaxima.cs" />
         <Compile Include="MergeArrays.cs" />
         <Compile Include="Multiples.cs" />

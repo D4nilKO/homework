@@ -7,7 +7,7 @@ namespace homework.LINQ.TopServerPlayers;
 
 internal static class Program
 {
-    public static void Main(string[] args)
+    public static void Main1(string[] args)
     {
         new Server().Work();
     }
@@ -38,24 +38,26 @@ class Server
 
     public void Work()
     {
+        int countOfTopPlayers = 3;
+
         Console.WriteLine("Список игроков:");
         ShowPlayers(_players);
 
-        Console.WriteLine("\nТоп 3 игроков по уровню:");
-        ShowPlayers(Get3TopPlayerByLevel());
+        Console.WriteLine($"\nТоп {countOfTopPlayers} игроков по уровню:");
+        ShowPlayers(GetTopPlayerByLevel(countOfTopPlayers));
 
-        Console.WriteLine("\nТоп 3 игроков по силе:");
-        ShowPlayers(Get3TopPlayerByStrength());
+        Console.WriteLine($"\nТоп {countOfTopPlayers} игроков по силе:");
+        ShowPlayers(GetTopPlayerByStrength(countOfTopPlayers));
     }
 
-    private List<Player> Get3TopPlayerByLevel()
+    private List<Player> GetTopPlayerByLevel(int countOfTopPlayers)
     {
-        return _players.OrderByDescending(player => player.Level).Take(3).ToList();
+        return _players.OrderByDescending(player => player.Level).Take(countOfTopPlayers).ToList();
     }
 
-    private List<Player> Get3TopPlayerByStrength()
+    private List<Player> GetTopPlayerByStrength(int countOfTopPlayers)
     {
-        return _players.OrderByDescending(player => player.Strength).Take(3).ToList();
+        return _players.OrderByDescending(player => player.Strength).Take(countOfTopPlayers).ToList();
     }
 
     private void ShowPlayers(List<Player> players)
