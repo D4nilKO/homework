@@ -52,6 +52,7 @@
         <Compile Include="Bar.cs" />
         <Compile Include="KansasCityShuffle.cs" />
         <Compile Include="LargestElement.cs" />
+        <Compile Include="LINQ\SearchСriminal.cs" />
         <Compile Include="LocalMaxima.cs" />
         <Compile Include="MergeArrays.cs" />
         <Compile Include="Multiples.cs" />
@@ -81,9 +82,6 @@
         <Compile Include="Split.cs" />
         <Compile Include="SubArrayRepetitionsNumbers.cs" />
         <Compile Include="UserUtils.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <Folder Include="LINQ" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

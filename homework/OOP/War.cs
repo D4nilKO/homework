@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using static homework.OOP.War.UserUtils;
+using static homework.UserUtils;
 
 namespace homework.OOP.War;
 
@@ -9,21 +9,6 @@ internal static class Program
     public static void Main1(string[] args)
     {
         new Battlefield(4).Work();
-    }
-}
-
-internal static class UserUtils
-{
-    private static Random s_random = new();
-
-    public static int GetRandomNumber(int min, int max)
-    {
-        return s_random.Next(min, max);
-    }
-
-    public static int GetRandomNumber(int max)
-    {
-        return s_random.Next(max);
     }
 }
 

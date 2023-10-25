@@ -5,7 +5,12 @@ namespace homework;
 internal static class UserUtils
 {
     private static Random s_random = new();
-
+    
+    public static bool GetRandomBool()
+    {
+        return s_random.Next() > (Int32.MaxValue / 2);
+    }
+    
     public static int GetRandomNumber(int min, int max)
     {
         return s_random.Next(min, max);
