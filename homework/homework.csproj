@@ -52,6 +52,8 @@
         <Compile Include="Bar.cs" />
         <Compile Include="KansasCityShuffle.cs" />
         <Compile Include="LargestElement.cs" />
+        <Compile Include="LINQ\Amnesty.cs" />
+        <Compile Include="LINQ\HospitalAnarchy.cs" />
         <Compile Include="LINQ\SearchСriminal.cs" />
         <Compile Include="LocalMaxima.cs" />
         <Compile Include="MergeArrays.cs" />
@@ -64,7 +66,7 @@
         <Compile Include="OOP\DatabaseProgram.cs" />
         <Compile Include="OOP\DeckProgram.cs" />
         <Compile Include="OOP\GladiatorFights.cs" />
-        <Compile Include="OOP\Menu.cs" />
+        <Compile Include="OOP\MenuTemplate.cs" />
         <Compile Include="OOP\PlayerProgram.cs" />
         <Compile Include="OOP\PropertiesProgram.cs" />
         <Compile Include="OOP\Store.cs" />

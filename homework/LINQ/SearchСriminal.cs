@@ -7,7 +7,7 @@ namespace homework.LINQ.SearchCriminal;
 
 internal static class Program
 {
-    public static void Main(string[] args)
+    public static void Main1(string[] args)
     {
         new DetectiveHelper().Work();
     }
