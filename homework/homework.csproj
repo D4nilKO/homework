@@ -55,6 +55,7 @@
         <Compile Include="LINQ\Amnesty.cs" />
         <Compile Include="LINQ\HospitalAnarchy.cs" />
         <Compile Include="LINQ\SearchСriminal.cs" />
+        <Compile Include="LINQ\TopServerPlayers.cs" />
         <Compile Include="LocalMaxima.cs" />
         <Compile Include="MergeArrays.cs" />
         <Compile Include="Multiples.cs" />
