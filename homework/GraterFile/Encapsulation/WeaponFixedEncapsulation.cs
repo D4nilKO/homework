@@ -5,39 +5,41 @@ namespace homework.GraterFile.Encapsulation.Fixed;
 
 class Weapon
 {
+    private readonly int _damage;
+    private int _bullets;
+
     public Weapon(int damage, int bullets)
     {
-        if (damage >= 0)
-            _damage = damage;
-        else
+        //бросать исключения в блоке else 
+        //плохая практика, сначала нужно все проверить и если что не так - бросить исключение
+        
+        bool isDamageValid = damage > 0;
+        bool isBulletsValid = bullets > 0;
+
+        if (isDamageValid == false)
             throw new ArgumentException("Damage can't be negative");
 
-        if (_bullets >= 0)
-            _bullets = bullets;
-        else
+        if (isBulletsValid == false)
             throw new ArgumentException("Bullets can't be negative");
-    }
 
-    private int _damage;
-    private int _bullets;
+        _damage = damage;
+        _bullets = bullets;
+    }
 
     public void Fire(Player player)
     {
-        if (player == null)
-        {
-            Debug.WriteLine("Player can't be null");
-            return;
-        }
-
-        if (_bullets <= 0)
-        {
-            Debug.WriteLine("No more bullets, need to reload!");
-            return;
-        }
+        bool isPlayerValid = player != null;
+        bool isBulletsValid = _bullets > 0;
+        
+        if (isPlayerValid == false)
+            throw new ArgumentException("Player can't be null");
+        
+        if (isBulletsValid == false)
+            throw new ArgumentException("Bullets can't be negative");
 
         if (player.TryApplyDamage(_damage))
         {
-            _bullets -= 1;
+            _bullets--;
         }
     }
 }
@@ -45,9 +47,12 @@ class Weapon
 class Player
 {
     private int _health;
+    private bool _isDead;
 
     public Player(int health, int maxHealth)
     {
+        //бросать исключения в блоке else 
+        //плохая практика, сначала нужно все проверить и если что не так - бросить исключение
         if (health > 0)
             Health = health;
         else
@@ -59,32 +64,26 @@ class Player
             throw new ArgumentException("MaxHealth can't be negative");
     }
 
-    private int MaxHealth { get; }
-
     public int Health
     {
         get => _health;
         private set => _health = UserUtils.Clamp(value, 0, MaxHealth);
     }
 
-    private void Die()
-    {
-        // do something
-    }
+    private int MaxHealth { get; }
 
     public bool TryApplyDamage(int damage)
     {
-        if (damage < 0)
+        if (damage <= 0)
         {
-            Debug.WriteLine("Damage can't be negative");
-            return false;
+            throw new ArgumentException("Damage can't be negative");
         }
 
         _health -= damage;
 
         if (_health <= 0)
         {
-            Die();
+            _isDead = true;
         }
 
         return true;
@@ -93,7 +92,7 @@ class Player
 
 class Bot
 {
-    private Weapon _weapon;
+    private readonly Weapon _weapon;
 
     public Bot(Weapon weapon)
     {
@@ -109,6 +108,9 @@ class Bot
 
     public void OnSeePlayer(Player player)
     {
+        if (player == null)
+            throw new ArgumentException("Player can't be null");
+
         _weapon.Fire(player);
     }
 }
