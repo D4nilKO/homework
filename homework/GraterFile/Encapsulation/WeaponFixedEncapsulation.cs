@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 
 namespace homework.GraterFile.Encapsulation.Fixed;
 
@@ -10,9 +9,6 @@ class Weapon
 
     public Weapon(int damage, int bullets)
     {
-        //бросать исключения в блоке else 
-        //плохая практика, сначала нужно все проверить и если что не так - бросить исключение
-        
         bool isDamageValid = damage > 0;
         bool isBulletsValid = bullets > 0;
 
@@ -51,17 +47,17 @@ class Player
 
     public Player(int health, int maxHealth)
     {
-        //бросать исключения в блоке else 
-        //плохая практика, сначала нужно все проверить и если что не так - бросить исключение
-        if (health > 0)
-            Health = health;
-        else
-            throw new ArgumentException("Health can't be negative");
+        bool isHealthValid = health > 0;
+        bool isMaxHealthValid = maxHealth > 0;
 
-        if (maxHealth > 0)
-            MaxHealth = maxHealth;
-        else
+        if (isHealthValid == false)
+            throw new ArgumentException("Health can't be negative");
+        
+        if (isMaxHealthValid == false)
             throw new ArgumentException("MaxHealth can't be negative");
+
+        MaxHealth = maxHealth;
+        Health = health;
     }
 
     public int Health
