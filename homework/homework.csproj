@@ -50,6 +50,8 @@
         <Compile Include="DynamicArray.cs" />
         <Compile Include="ExitControl.cs" />
         <Compile Include="Bar.cs" />
+        <Compile Include="GraterFile\Encapsulation\WeaponFixedEncapsulation.cs" />
+        <Compile Include="GraterFile\Encapsulation\WeaponOriginal.cs" />
         <Compile Include="KansasCityShuffle.cs" />
         <Compile Include="LargestElement.cs" />
         <Compile Include="LINQ\Amnesty.cs" />
